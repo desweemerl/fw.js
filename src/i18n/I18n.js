@@ -475,15 +475,15 @@ var I18n = {
         function processDictionary(dictionary) {
             var messageTr, n;
 
-            if (types.isObject(dictionary)) {
-                messageTr = getMessage(dictionary);
-            } else if (!types.isEmptyString(dictionary) && register[dictionary]) {
+            if (!types.isEmptyString(dictionary) && register[dictionary]) {
                 messageTr = getMessage(register[dictionary].cache);
             } else if (dictionary instanceof Array) {
                 for (n = dictionary.length - 1; n >= 0; n--) {
                     messageTr = processDictionary(dictionary[n]);
                     if (messageTr !== undefined) return messageTr;
                 }
+            } else if (types.isObject(dictionary)) {
+                messageTr = getMessage(dictionary);
             }
 
             return messageTr;
