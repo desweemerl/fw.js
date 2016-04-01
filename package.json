@@ -1,0 +1,28 @@
+{
+  "name": "FireworksJS",
+  "version": "0.1.0",
+  "description": "FireworksJS Web Application Framework",
+  "author": "Ludovic Desweemer",
+  "license": "AGPL-3.0",
+  "main": "Gruntfile.js",
+  "bin": {
+    "fwjs": "./bin/fwjs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "gogs@ldesweemer.ddns.net:ldesweemer/FireworksJS.git"
+  },
+  "dependencies": {
+    "colors":               "^1.1.2",  
+    "commander":            "^2.9.0",
+    "sweet.js":             "0.7.3",
+    "jshint":               "^2.9.1",
+    "through":              "^2.3.8",
+    "uglify":               "^0.1.5",
+    "watchify":             "^3.7.0",
+    "wrench":               "^1.5.8"
+  }
+}

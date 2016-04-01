@@ -1,0 +1,40 @@
+{
+    "source": {
+        "include": [
+            "fw/Core.js",
+            "fw/ui/Element.js",
+            "fw/ui/desktop/component/Notification.js",
+            "fw/Application.js",
+            "fw/ui/desktop/component/Progressbar.js",
+            "fw/i18n/Message.js",
+            "fw/Model.js",
+            "fw/Promise.js",
+            "fw/Queue.js",
+            "fw/ui/desktop/component/Spinner.js",
+            "fw/ui/Template.js",
+            "fw/RegisteredElements.js",
+            "fw/i18n/I18n.js",
+            "fw/ArrayModel.js",
+            "fw/ObjectModel.js",
+            "fw/ui/desktop/chart/ScatterChart.js",
+            "fw/error/AjaxError.js",
+            "fw/ui/desktop/form/Button.js",
+            "fw/ui/desktop/form/CheckBox.js",
+            "fw/ui/desktop/form/CurrencyField.js",
+            "fw/ui/desktop/form/CurrencyLabel.js",
+            "fw/ui/desktop/form/DateField.js",
+            "fw/ui/desktop/grid/EditableDataGrid",
+            "fw/net/Ajax.js",            
+            "fw/source/DataSource.js", 
+            "fw/source/EditableGridSource.js",             
+            "fw/source/RestStore.js", 
+            "fw/source/SearchSource.js",
+            "fw/source/FileUploadSource.js",
+            "fw/source/ChartSource.js"]
+    },
+    "destination": "docs",
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "plugins": ["plugins/markdown"]
+}

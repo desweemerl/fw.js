@@ -1,0 +1,193 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var browserify = require('browserify');
+var colors = require('colors');
+var fs = require('fs');
+var path = require('path');
+var program = require('commander');
+var packageJson = require('../package.json');
+var sweet = require('sweet.js');
+var through = require('through');
+var watchify = require('watchify');
+var wrench = require('wrench');
+
+const CONFIG_FILE = 'fw.config.js';
+const SRC_PATH = path.join(process.cwd(), 'src');
+
+var config = {};
+var sjs_modules = [];
+var bs;
+
+program
+    .version(packageJson.version)
+    .usage('[options] <entry> <target>')
+    .option('-c, --config [configPath]', 'Path to config file')
+    .option('-d, --debug', 'Add a source map at the end of the bundle')
+    .option('-j, --jshint', 'Check syntax with jshint')
+    .option('-p, --paths', 'Directories that browserify searches when looking for modules')
+    .option('-u, --uglify', 'Uglify the output')
+    .option('-w, --watchify', 'Watch source change')
+    .parse(process.argv);
+
+var options = {
+    configPath: program.config,
+    debug:      program.debug,
+    jshint:     program.jshint,
+    paths:      program.paths ? program.paths.split(',') : null,
+    uglify:     program.uglify,
+    watchify:   program.watchify
+};
+
+function isFile(filePath) {
+    return fs.existsSync(filePath) && fs.statSync(filePath).isFile();
+}
+
+function isDirectory(dirPath) {
+    return fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory();
+}
+
+function warn(tag, message) {
+    console.log(tag ? [colors.red('[' + tag + ']'), colors.white(message)].join(' ') : colors.white(message));
+}
+
+function info(tag, message) {
+    console.log(tag ? [colors.cyan('[' + tag + ']'), colors.white(message)].join(' ') : colors.white(message));
+}
+
+function loadConfig(configPath) {
+    if (isFile(configPath)) {
+        try {
+            config = JSON.parse(fs.readFileSync(configPath, null));
+            return true;
+        } catch(ex) {
+            warn('CONFIG', ex.name + ' - ' + ex.message.trim());            
+        }
+    }
+
+    return false;
+}
+
+function installLib() {
+    try {
+        wrench.copyDirSyncRecursive(path.join(__dirname, '../src'), path.join(path.dirname(config.entry), 'fw'), { forceDelete: true });
+        info('LIB', 'fwjs lib successfuly installed in entry path');
+    } catch(ex) {
+        warn('LIB', 'Unable to install fwjs in entry path: - ' + ex.name + ' - ' + ex.message);
+        process.exit(1);
+    }
+}
+
+function loadSjsMacros() {
+    var macrosPath = path.join(__dirname, '../macros');
+    var macros, macro, n, l;
+
+    try {
+        macros = fs.readdirSync(macrosPath);
+    } catch(ex) {
+        warn('SWEETJS', 'Unable to load Sweet.js macros - ' + ex.name + ' - ' + ex.message);
+        process.exit(1);
+    }
+
+    for(n = 0, l = macros.length; n < l; n++) {
+        try {
+            macro = macros[n];
+            sjs_modules.push(sweet.loadNodeModule(process.cwd(), path.join(macrosPath, macro)));
+            info('SWEETJS', 'Sweet.js macro "' + macro + '" loaded');
+        } catch(ex) {
+            warn('SWEETJS', 'Error loading Sweet.js macro "' + macro + '" - ' + ex.name + ' - ' + ex.message.trim());
+            process.exit(1);
+        }
+    }
+}
+
+function run(entry, target, options) {
+    var configPath = options.configPath || path.join(process.cwd(), CONFIG_FILE);
+    var configFound = loadConfig(configPath);
+    var symlink;
+    var key, value, module, n, l;
+
+    info('CONFIG', configFound ? 'Config file "' + configPath + '" loaded' : 'No configuration file found');
+
+    for (key in options) {
+        value = options[key];
+
+        if (value) {
+            config[key] = value instanceof Array ?
+                 (config[key] instanceof Array ? config[key].concat(value) : value) :
+                 value;    
+        }
+    }
+
+    if (!isFile(config.entry)) {
+        warn('CONFIG', 'No entry defined');
+        process.exit(1);
+    }
+
+    if (!config.target) {
+        warn('CONFIG', 'No target defined');
+        process.exit(1);
+    }
+
+    config.paths = typeof config.paths === 'string' ? [config.paths] : config.paths || [];
+    config.paths.push(path.dirname(config.entry));
+
+    installLib();
+    loadSjsMacros();
+    
+    bs = browserify({
+        paths:        config.paths,
+        debug:        config.debug,
+        cache:        {},
+        packageCache: {}
+    }).add(config.entry);
+
+    if (config.watchify) {
+        bs.plugin(watchify)
+        .on('update', function() {
+            info('WATCHIFY', 'Change occurs - rebuilding the target bundle...');
+            bundle();
+        });
+    }
+
+    bs.transform(sweetify);
+    bundle();   
+}
+
+function bundle() {
+    info('BROWSERIFY', 'Building the target bundle "' + config.target + '"');
+    bs.bundle()  
+      .pipe(fs.createWriteStream(config.target));
+}
+
+function sweetify(file) {
+    var data = '';
+
+    return through(write, end);
+
+    function write(buf) { 
+        data += buf; 
+    }
+
+    function end() {
+        var compiled;
+
+        try {
+            compiled = sweet.compile(data, {
+                modules:       sjs_modules, 
+                sourceMap:     false,
+                readableNames: true
+            });
+            info('SWEETIFY', 'File "' + file + '" compiled');
+        } catch(ex) {
+            warn('SWEETIFY', 'File "' + file + '" not compiled - ' + ex.name + ' - ' + ex.message.trim()); 
+        }
+
+        this.queue(compiled ? compiled.code : ''); // jshint ignore:line
+        this.queue(null);                          // jshint ignore:line
+    }
+}
+
+
+run(program.args[0], program.args[1], options);
