@@ -33,6 +33,11 @@ class FwWindowModal extends ElementModal {
      */
     static tagName = 'fw-windowmodal'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-windowmodal'; // jshint ignore:line
+    /**
      * define the i18n dictionaries
      * @property i18n
      */
@@ -70,19 +75,19 @@ class FwWindowModal extends ElementModal {
         this.node.cellSpacing = 0;
         this.node.cellPadding = 0;
         this.node.innerHTML = '\
-            <div class="topBar">\
-                <div class="title"></div>\
-                <div class="close"></div>\
+            <div class="fw-windowmodal-top">\
+                <div class="fw-windowmodal-title"></div>\
+                <div class="fw-windowmodal-close"></div>\
             </div>\
-            <div class="main">\
-                <div class="scroll"></div>\
+            <div class="fw-windowmodal-main">\
+                <div class="fw-windowmodal-scroll"></div>\
             </div>';
 
-        this.topBarNode = this.node.getElementsByClassName('topBar')[0];
-        this.titleNode = this.node.getElementsByClassName('title')[0];
-        this.closeNode = this.node.getElementsByClassName('close')[0];
-        this.mainNode = this.node.getElementsByClassName('main')[0];
-        this.scrollNode = this.node.getElementsByClassName('scroll')[0];
+        this.topNode = this.node.getElementsByClassName('fw-windowmodal-top')[0];
+        this.titleNode = this.node.getElementsByClassName('fw-windowmodal-title')[0];
+        this.closeNode = this.node.getElementsByClassName('fw-windowmodal-close')[0];
+        this.mainNode = this.node.getElementsByClassName('fw-windowmodal-main')[0];
+        this.scrollNode = this.node.getElementsByClassName('fw-windowmodal-scroll')[0];
 
         this.setTitle(this.config.title);
         this.setContentNode(this.configContentNode);
@@ -166,7 +171,7 @@ class FwWindowModal extends ElementModal {
         var windowWidth = window.innerWidth;
         var scrollbarSizes = fw.getScrollbarSizes();
         var marginOutside = 10;
-        var diffHeight = 2 * marginOutside + this.topBarNode.offsetHeight;
+        var diffHeight = 2 * marginOutside + this.topNode.offsetHeight;
         var diffMargin = 2 * marginOutside;
         var width, height;
 

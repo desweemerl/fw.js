@@ -29,6 +29,11 @@ class FwProgressBar extends ElementModal {
      */
     static tagName = 'fw-progressbar'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-progressbar'; // jshint ignore:line   
+    /**
      * Initialize the progressbar UI element
      * @method initialize
      * @private
@@ -47,10 +52,10 @@ class FwProgressBar extends ElementModal {
      */
     buildUI() {
         this.node.setAttribute('tabindex', '0');
-        this.node.innerHTML = '<div class="bar"><div></div></div><div class="info"></div>';
+        this.node.innerHTML = '<div class="fw-progressbar-bar"><div></div></div><div class="fw-progressbar-info"></div>';
         this.progressbarNode = this.node.firstElementChild;
         this.barNode = this.progressbarNode.firstElementChild;
-        this.infoNode = this.node.getElementsByClassName('info')[0];
+        this.infoNode = this.node.getElementsByClassName('fw-progressbar-info')[0];
 
         this.setPercentage(this.config.percentage);
         this.setMessage(this.config.message);

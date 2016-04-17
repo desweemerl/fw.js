@@ -24,6 +24,11 @@ class FwSpinner extends ElementModal {
      */
     static tagName = 'fw-spinner'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-spinner'; // jshint ignore:line   
+    /**
      * Build UI element nodes
      * @method buildUI
      * @private

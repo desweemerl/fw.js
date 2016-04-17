@@ -134,7 +134,11 @@ class FwNotification extends FwElement {
      * @property tagName
      */
     static tagName = 'fw-notification'; // jshint ignore:line
-
+    /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-notification'; // jshint ignore:line   
     /**
      * Clear all messages
      * @method cleara

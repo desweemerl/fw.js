@@ -24,6 +24,11 @@ class FwTabPanel extends FwElement {
      */
     static tagName = 'fw-tabpanel'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-tabpanel'; // jshint ignore:line   
+    /**
      * Initialize the UI element
      * @method initialize
      * @private
@@ -85,28 +90,28 @@ class FwTabPanel extends FwElement {
         var n, l;
 
         this.node.innerHTML = '\
-            <div class="tabs">\
-                <div class="bottomLine"></div>\
-                <ul></ul>\
+            <div class="fw-tabpanel-selectors-container">\
+                <div class="fw-tabpanel-selectors-line"></div>\
+                <ul class="fw-tabpanel-selectors"></ul>\
             </div>\
-            <div class="bgContainer">\
-                <div class="container"></div>\
+            <div class="fw-tabpanel-bgcontainer">\
+                <div class="fw-tabpanel-container"></div>\
             </div>';
         this.node.style.width = this.width;
 
-        this.titlesNode = this.node.getElementsByTagName('ul')[0];
-        this.containerNode = this.node.getElementsByClassName('container')[0];
+        this.selectorsNode = this.node.getElementsByClassName('fw-tabpanel-selectors')[0];
+        this.containerNode = this.node.getElementsByClassName('fw-tabpanel-container')[0];
 
         for (n = 0, l = this.tabs.length; n < l; n++) {
             tab = this.tabs[n];
             this.containerNode.appendChild(tab.node);
             divNode = document.createElement('div');
-            divNode.classList.add('title');
+            divNode.classList.add('fw-tabpanel-title');
             divNode.appendChild(document.createTextNode(this.createMessage(tab.title)));
             tab.titleNode = document.createElement('li');
-            tab.titleNode.classList.add('tab');
+            tab.titleNode.classList.add('fw-tabpanel-title-container');
             tab.titleNode.appendChild(divNode);
-            this.titlesNode.appendChild(tab.titleNode);
+            this.selectorsNode.appendChild(tab.titleNode);
 
             if (this.selectedIndex === null) {
                 tab.titleNode.classList.add('selected');
@@ -162,7 +167,7 @@ class FwTabPanel extends FwElement {
     onClick(e) {
         var n, l;
 
-        if (this.titlesNode.contains(e.target)) {
+        if (this.selectorsNode.contains(e.target)) {
             for (n = 0, l = this.tabs.length; n < l; n++) {
                 if (this.tabs[n].titleNode.contains(e.target)) {
                     if (n !== this.selectedIndex) {
@@ -340,12 +345,12 @@ class FwTabPanel extends FwElement {
             tab.node.appendChild(node);
             this.containerNode.appendChild(tab.node);
             divNode = document.createElement('div');
-            divNode.classList.add('title');
+            divNode.classList.add('fw-tabpanel-title');
             divNode.appendChild(document.createTextNode(this.createMessage(tabTitle)));
             tab.titleNode = document.createElement('li');
-            tab.titleNode.classList.add('tab');
+            tab.titleNode.classList.add('fw-tabpanel-title-container');
             tab.titleNode.appendChild(divNode);
-            this.titlesNode.appendChild(tab.titleNode);
+            this.selectorsNode.appendChild(tab.titleNode);
 
             if (this.selectedIndex === null) {
                 tab.titleNode.classList.add('selected');
@@ -379,7 +384,7 @@ class FwTabPanel extends FwElement {
         }
 
         this.containerNode.removeChild(tab.node);
-        this.titlesNode.removeChild(tab.titleNode);
+        this.selectorsNode.removeChild(tab.titleNode);
         this.tabsIndex.splice(tabIndex, 1);
         this.tabs.splice(tabIndex, 1);
 

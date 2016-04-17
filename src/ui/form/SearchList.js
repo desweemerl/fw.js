@@ -34,6 +34,11 @@ class FwSearchList extends EditableFormElement {
      */
     static tagName = 'fw-searchlist'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-searchlist'; // jshint ignore:line   
+    /**
      * Define element type
      * @property type
      */
@@ -71,44 +76,44 @@ class FwSearchList extends EditableFormElement {
         this.contentFilterPanelNode = null;
 
         if (this.filters.length > 0) {
-            this.addClassName('filterButton');
+            this.addClassName('full');
             this.node.innerHTML = '\
-                <div class="searchListInput">\
-                    <div class="filterButton"><div><div></div></div></div>\
-                    <div class="searchInput"><input type="text" spellcheck="false"></input></div>\
-                    <div class="searchButton"><div><div></div></div></div>\
+                <div class="fw-searchlist-parent">\
+                    <div class="fw-searchlist-filter"><div><div></div></div></div>\
+                    <div class="fw-searchlist-input"><input type="text" spellcheck="false"></input></div>\
+                    <div class="fw-searchlist-search"><div><div></div></div></div>\
                 </div>';
-            this.filterButtonNode = this.node.getElementsByClassName('filterButton')[0];
+            this.filterButtonNode = this.node.getElementsByClassName('fw-searchlist-full-filter')[0];
             this.filterPanelNode = document.createElement('div');
-            this.filterPanelNode.classList.add('filterPanel');
+            this.filterPanelNode.classList.add('fw-searchlist-panel');
             this.filterPanelNode.innerHTML = '\
-                <div class="header">\
-                    <div class="switchFilter">\
-                        <div class="switchButton">\
-                            <div class="on"></div>\
-                            <div class="off"></div>\
-                            <div class="cursor"></div>\
+                <div class="fw-searchlist-header">\
+                    <div class="fw-searchlist-switch">\
+                        <div class="fw-searchlist-button">\
+                            <div class="fw-searchlist-on"></div>\
+                            <div class="fw-searchlist-off"></div>\
+                            <div class="fw-searchlist-cursor"></div>\
                         </div>\
                     </div>\
-                    <div class="closeFilterPanel"></div>\
+                    <div class="fw-searchlist-close"></div>\
                 </div>\
-                <div class="content"></div>\
-                <div class="footer"></div>';
-            this.switchFilterButtonNode = this.filterPanelNode.getElementsByClassName('switchButton')[0];
-            this.closeFilterPanelNode = this.filterPanelNode.getElementsByClassName('closeFilterPanel')[0];
-            this.contentFilterPanelNode = this.filterPanelNode.getElementsByClassName('content')[0];
+                <div class="fw-searchlist-content"></div>\
+                <div class="fw-searchlist-footer"></div>';
+            this.switchFilterButtonNode = this.filterPanelNode.getElementsByClassName('fw-searchlist-button')[0];
+            this.closeFilterPanelNode = this.filterPanelNode.getElementsByClassName('fw-searchlist-close')[0];
+            this.contentFilterPanelNode = this.filterPanelNode.getElementsByClassName('fw-searchlist-content')[0];
             this.buildFilterPanel();
         } else {
             this.node.innerHTML = '\
-                <div class="searchListInput">\
-                    <div class="searchInput"><input type="text"></input></div>\
-                    <div class="searchButton"><div><div></div></div></div>\
+                <div class="fw-searchlist-parent">\
+                    <div class="fw-searchlist-input"><input type="text"></input></div>\
+                    <div class="fw-searchlist-search"><div><div></div></div></div>\
                 </div>';
         }
 
-        this.searchListInputNode = this.node.getElementsByClassName('searchListInput')[0];
-        this.inputFieldNode = this.searchListInputNode.getElementsByTagName('input')[0];
-        this.searchButtonNode = this.node.getElementsByClassName('searchButton')[0];
+        this.searchListParentNode = this.node.getElementsByClassName('fw-searchlist-parent')[0];
+        this.inputFieldNode = this.searchListParentNode.getElementsByTagName('input')[0];
+        this.searchButtonNode = this.node.getElementsByClassName('fw-searchlist-search')[0];
         this.setFocusableNode(this.inputFieldNode);
     }
     /**
@@ -187,7 +192,7 @@ class FwSearchList extends EditableFormElement {
         this.on('change',  this.onNodeChange);
         this.on('keydown', this.onKeyDown);
         this.on('mousedown', this.onMouseDown);
-        this.on('mouseup', this.onMouseUp);
+        this.on(['mouseup', 'mouseout'], this.desactivate);
         this.on('click', this.onClick);
     }
     /**
@@ -196,7 +201,7 @@ class FwSearchList extends EditableFormElement {
      * @private
      */
     onFocus(e) { 
-        if (this.searchListInputNode.contains(e.target)) {
+        if (this.searchListParentNode.contains(e.target)) {
             this.addClass('focused');
             this.focused = true;
         }
@@ -207,7 +212,7 @@ class FwSearchList extends EditableFormElement {
      * @private
      */
     onBlur(e) {
-        if (this.searchListInputNode.contains(e.target)) {
+        if (this.searchListParentNode.contains(e.target)) {
             this.removeClass('focused');
             this.focused = false;
         }
@@ -258,7 +263,7 @@ class FwSearchList extends EditableFormElement {
     onMouseDown(e) {
         if (e.target === this.inputFieldNode) return;
 
-        if (this.searchListInputNode.contains(e.target)) {
+        if (this.searchListParentNode.contains(e.target)) {
             if (this.searchButtonNode.contains(e.target)) {
                 this.searchButtonNode.classList.add('activated');
             } else if (this.filterButtonNode !== null) {
@@ -281,11 +286,11 @@ class FwSearchList extends EditableFormElement {
         }
     }
     /**
-     * mouseup event handler
-     * @method onMouseUp
+     * mouseup and mouseout event handler
+     * @method desactivate
      * @private
      */
-    onMouseUp(e) {
+    desactivate(e) {
         this.searchButtonNode.classList.remove('activated');
 
         if (this.filterButtonNode !== null) {
@@ -375,10 +380,10 @@ class FwSearchList extends EditableFormElement {
 
         if (active && !this.filterActivated) {
             this.filterActivated = true;
-            this.addClass('filterOn');
+            this.addClass('filter-on');
         } else if (!active && this.filterActivated) {
             this.filterActivated = false;
-            this.removeClass('filterOn');
+            this.removeClass('filter-on');
         } else {
             return;
         }
@@ -438,7 +443,7 @@ class FwSearchList extends EditableFormElement {
             } else {
                 if (!this.filterActivated) {
                     this.filterActivated = true;
-                    this.addClass('filterOn');
+                    this.addClass('filter-on');
                 }
 
                 filterNode.checkBox.setValue(true);

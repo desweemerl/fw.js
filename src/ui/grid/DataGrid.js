@@ -46,6 +46,11 @@ class DataGrid extends ArrayElement {
      */
     static tagName = 'fw-datagrid'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-datagrid'; // jshint ignore:line
+    /**
      * Define the i18n dictionaries
      * @property i18n
      */
@@ -113,25 +118,25 @@ class DataGrid extends ArrayElement {
     buildUI() {
         this.node.style.width = this.width;
         this.node.innerHTML = '\
-            <div class="content">\
-                <div class="frame">\
+            <div class="fw-datagrid-content">\
+                <div class="fw-datagrid-frame">\
                     <table>\
                         <thead></thead>\
                         <tbody></tbody>\
                     </table>\
                 </div>\
-                <div class="scrollSpacer"></div>\
-                <div class="spinner"><div><div></div></div></div>\
+                <div class="fw-datagrid-scroll"></div>\
+                <div class="fw-datagrid-spinner"><div><div></div></div></div>\
             </div>\
-            <div class="footer"></div>';
-        this.contentNode = this.node.getElementsByClassName('content')[0];
-        this.frameNode = this.contentNode.getElementsByClassName('frame')[0];
+            <div class="fw-datagrid-footer"></div>';
+        this.contentNode = this.node.getElementsByClassName('fw-datagrid-content')[0];
+        this.frameNode = this.contentNode.getElementsByClassName('fw-datagrid-frame')[0];
         this.tableNode = this.contentNode.getElementsByTagName('table')[0];
         this.headerNode = this.contentNode.getElementsByTagName('thead')[0];
         this.bodyNode = this.contentNode.getElementsByTagName('tbody')[0];
-        this.footerNode = this.node.getElementsByClassName('footer')[0];
-        this.scrollSpacer = this.node.getElementsByClassName('scrollSpacer')[0];
-        this.spinnerNode = this.contentNode.getElementsByClassName('spinner')[0];
+        this.footerNode = this.node.getElementsByClassName('fw-datagrid-footer')[0];
+        this.scrollSpacer = this.node.getElementsByClassName('fw-datagrid-scroll')[0];
+        this.spinnerNode = this.contentNode.getElementsByClassName('fw-datagrid-spinner')[0];
 
         this.calculateColumnWidths();
         this.buildHeader();
@@ -288,7 +293,6 @@ class DataGrid extends ArrayElement {
         this.onWindowEvent('resize', this.onWindowResize);
         this.onWindowEvent('mousemove', this.onWindowMouseMove);
         this.onWindowEvent('mouseup', this.onWindowMouseUp);
-
     }
     /**
      * mousedown event handler
@@ -296,13 +300,13 @@ class DataGrid extends ArrayElement {
      * @private
      */
     onMouseDown(e) {
-        if (e.target.classList.contains('resizer')) {
+        if (e.target.classList.contains('fw-datagrid-resizer')) {
             this.mousedown = true;
             this.mouseStartX = e.clientX;
             this.numColResized = e.target.parentNode.parentNode.cellIndex - 1;
-        } else if (this.footerNode.contains(e.target) && e.target.classList.contains('action')) {
+        } else if (this.footerNode.contains(e.target) && e.target.classList.contains('fw-datagrid-faction')) {
             if (!e.target.classList.contains('disabled')) {
-                e.target.classList.add('active');
+                e.target.classList.add('activated');
             }
         }
     }
@@ -321,13 +325,13 @@ class DataGrid extends ArrayElement {
         var numCol, numRow;
 
         if (this.headerNode.contains(e.target)) {
-            if (e.target.classList.contains('header')) {
+            if (e.target.classList.contains('fw-datagrid-header')) {
                 headerNode = e.target.parentNode;
                 index = headerNode.cellIndex;
-            } else if (e.target.classList.contains('headerLabel')) {
+            } else if (e.target.classList.contains('fw-datagrid-hlabel')) {
                 headerNode = e.target.parentNode.parentNode;
                 index = headerNode.cellIndex;
-            } else if (e.target.classList.contains('sortable')) {
+            } else if (e.target.classList.contains('fw-datagrid-sortable')) {
                 headerNode = e.target;
                 index = headerNode.cellIndex;
             } else {
@@ -352,23 +356,23 @@ class DataGrid extends ArrayElement {
         } else if (
             this.enabled &&
             this.footerNode.contains(e.target.parentNode) &&
-            e.target.parentNode.hasClass('action')) {
+            e.target.parentNode.hasClass('fw-datagrid-faction')) {
 
             page = this.paginatedArraySource.page;
             maxPages = this.paginatedArraySource.maxPages;
 
-            if (e.target.parentNode.classList.contains('goFirst')) {
+            if (e.target.parentNode.classList.contains('go-first')) {
                 if (page > 1) { this.paginatedArraySource.getFirstPage(); }
-            } else if (e.target.parentNode.classList.contains('goLast')) {
+            } else if (e.target.parentNode.classList.contains('go-last')) {
                 if (page < maxPages) { this.paginatedArraySource.getLastPage(); }
-            } else if (e.target.parentNode.classList.contains('goPrevious')) {
+            } else if (e.target.parentNode.classList.contains('go-previous')) {
                 if (page > 1) { this.paginatedArraySource.getPreviousPage(); }
-            } else if (e.target.parentNode.classList.contains('goNext')) {
+            } else if (e.target.parentNode.classList.contains('go-next')) {
                 if (page < maxPages) { this.paginatedArraySource.getNextPage(); }
             }
         } else if (
             this.bodyNode.contains(e.target) &&
-            e.target.classList.contains('action')) {
+            e.target.classList.contains('fw-datagrid-baction')) {
 
             index = e.target.parentNode.cellIndex;
             numCol = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.cellIndex;
@@ -417,6 +421,7 @@ class DataGrid extends ArrayElement {
         var rowHTML = [];
         var order = null;
         var orderAsc = true;
+        var resizerZIndex = this.getzIndex() + 1;
         var classNames, column, cell, header, n, l;
 
         if (this.paginatedArraySource) {
@@ -431,7 +436,7 @@ class DataGrid extends ArrayElement {
             header = this.createMessage(column.header);
 
             if (column.sortable) {
-                classNames.push('sortable');
+                classNames.push('fw-datagrid-sortable');
 
                 if (order === column.property) {
                     classNames.push(orderAsc ? 'asc' : 'desc');
@@ -440,17 +445,17 @@ class DataGrid extends ArrayElement {
 
             cell += classNames.join(' ');
             cell += '" style="width:' + column.width + 'px"';
-            cell += '><div class="header">';
+            cell += '><div class="fw-datagrid-header">';
 
             if (n > 0) {
-                cell += '<div class="resizer">&nbsp;</div>';
+                cell += '<div class="fw-datagrid-resizer" style="z-index:' + resizerZIndex + '"></div>';
             }
 
-            cell += '<div class="headerLabel">' + header + '</div></div></th>';
+            cell += '<div class="fw-datagrid-hlabel">' + header + '</div></div></th>';
             rowHTML.push(cell);
         }
 
-        this.headerNode.innerHTML = '<tr>' + rowHTML.join('') + '<th class="last"><div class="header"><div class="resizer">&nbsp;</div></div></th><th class="expandable"><div></div></th></tr>';
+        this.headerNode.innerHTML = '<tr>' + rowHTML.join('') + '<th class="last"<div class="fw-datagrid-header"><div class="fw-datagrid-resizer" style="z-index:' + resizerZIndex + '"></div></div></th><th class="expandable"><div></div></th></tr>';
     }
     /**
      * Build the DataGrid body
@@ -471,13 +476,13 @@ class DataGrid extends ArrayElement {
         }
 
         for (; i < this.size; i++) {
-            rowHTML = ['<tr class="row">'];
+            rowHTML = ['<tr class="fw-datagrid-row">'];
 
             for (n = 0, l = this.columns.length; n < l; n++) {
-                rowHTML.push('<td class="cell"><div class="empty">&nbsp;</div></td>');
+                rowHTML.push('<td class="fw-datagrid-cell"><div class="fw-datagrid-empty">&nbsp;</div></td>');
             }
 
-            rowHTML.push('<td><div class="empty">&nbsp;</div></td><td><div class="empty">&nbsp;</div></td></tr>');
+            rowHTML.push('<td><div class="fw-datagrid-empty">&nbsp;</div></td><td><div class="fw-datagrid-empty">&nbsp;</div></td></tr>');
             rowsHTML.push(rowHTML.join(''));
         }
 
@@ -492,16 +497,16 @@ class DataGrid extends ArrayElement {
      * @return {string} cell
      */
     getCell(item, column) {
-        if (!this.paginatedArraySource) return '<div class="empty">&nbsp;</div>';
+        if (!this.paginatedArraySource) return '<div class="fw-datagrid-empty">&nbsp;</div>';
 
         var cell, value, n, l, actionLabel;
 
         if (column.actions instanceof Array) {
-            cell = '<div class="actions"><table cellspacing="0" cellpadding="0"><tbody><tr>';
+            cell = '<div class="fw-datagrid-bactions"><table cellspacing="0" cellpadding="0"><tbody><tr>';
 
             for (n = 0, l = column.actions.length; n < l; n++) {
                 actionLabel = this.createMessage(column.actions[n].value);
-                cell += '<td><div class="action">' + actionLabel + '</div></td>';
+                cell += '<td><div class="fw-datagrid-baction">' + actionLabel + '</div></td>';
             }
 
             cell += '</tr></tbody></table></div>';
@@ -510,16 +515,16 @@ class DataGrid extends ArrayElement {
 
             switch (column.type) {
                 case 'timestampLabel':
-                    cell = '<div class="bodyLabel">' + value.toDMYHMSString() + '</div>';
+                    cell = '<div class="fw-datagrid-blabel">' + value.toDMYHMSString() + '</div>';
                     break;
                 case 'dateLabel':
-                    cell = '<div class="bodyLabel">' + value.toDMYString() + '</div>';
+                    cell = '<div class="fw-datagrid-blabel">' + value.toDMYString() + '</div>';
                     break;
                 case 'numberLabel':
-                    cell = '<div class="bodyLabel">' + value.toString({ decimals: column.decimals }) + '</div>';
+                    cell = '<div class="fw-datagrid-blabel">' + value.toString({ decimals: column.decimals }) + '</div>';
                     break;
                 case 'currencyLabel':
-                    cell = '<div class="bodyLabel">' + value.toString() + '</div>';
+                    cell = '<div class="fw-datagrid-blabel">' + value.toString() + '</div>';
                     break;
                 default:
                     if (fw.isValidNumber(value)) {
@@ -532,7 +537,7 @@ class DataGrid extends ArrayElement {
                         value = '&nbsp;';
                     }
 
-                    cell = '<div class="bodyLabel">' + value + '</div>';
+                    cell = '<div class="fw-datagrid-blabel">' + value + '</div>';
             }
         }
 
@@ -546,16 +551,16 @@ class DataGrid extends ArrayElement {
      * @return {string} row
      */
     getRow(item) {
-        var rowHTML = ['<tr class="row">'];
+        var rowHTML = ['<tr class="fw-datagrid-row">'];
         var n, l;
 
         for (n = 0, l = this.columns.length; n < l; n++) {
-            rowHTML.push('<td class="cell">');
+            rowHTML.push('<td class="fw-datagrid-cell">');
             rowHTML.push(this.getCell(item, this.columns[n]));
             rowHTML.push('</td>');
         }
 
-        rowHTML.push('<td><div class="empty">&nbsp;</div></td><td><div class="empty">&nbsp;</div></td></tr>');
+        rowHTML.push('<td><div class="fw-datagrid-empty">&nbsp;</div></td><td><div class="fw-datagrid-empty">&nbsp;</div></td></tr>');
 
         return rowHTML.join('');
     }
@@ -576,16 +581,16 @@ class DataGrid extends ArrayElement {
         }
 
         this.footerNode.innerHTML = '<table>\
-                <tbody>\
-                    <tr>\
-                        <td class="action goFirst' + ((page > 1) ? '"' : ' disabled"') + '><div></div></td>\
-                        <td class="action goPrevious' + ((page > 1) ? '"' : ' disabled"') + '><div></div></td>\
-                        <td class="action goNext' + ((page < maxPages) ? '"' : ' disabled"') + '><div></div></td>\
-                        <td class="action goLast' + ((page < maxPages) ? '"' : ' disabled"') + '><div></div></td>\
-                        <td class="info"><div>' + ((size > 0) ? (this.createMessage('results') + page + ' - ' + maxPages + this.createMessage('on') + size) : this.createMessage('noResult')) + '</div></td>\
-                    </tr>\
-                </tbody>\
-            </table>';
+            <tbody>\
+                <tr>\
+                    <td class="fw-datagrid-faction go-first' + ((page > 1) ? '"' : ' disabled"') + '><div></div></td>\
+                    <td class="fw-datagrid-faction go-previous' + ((page > 1) ? '"' : ' disabled"') + '><div></div></td>\
+                    <td class="fw-datagrid-faction go-next' + ((page < maxPages) ? '"' : ' disabled"') + '><div></div></td>\
+                    <td class="fw-datagrid-faction go-last' + ((page < maxPages) ? '"' : ' disabled"') + '><div></div></td>\
+                    <td class="fw-datagrid-finfo"><div>' + ((size > 0) ? (this.createMessage('results') + page + ' - ' + maxPages + this.createMessage('on') + size) : this.createMessage('noResult')) + '</div></td>\
+                </tr>\
+            </tbody>\
+        </table>';
     }
     /**
      * Refresh the DataGrid

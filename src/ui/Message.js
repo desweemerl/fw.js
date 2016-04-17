@@ -16,8 +16,8 @@ var Message = require('../i18n/Message');
  * @alias module:fw/ui/Message
  * @augments fw/ui/Element
  * @param {Object} [config] - the configuration object of the message
- * @param {string|fw/i18n/Message} [config.message] - the message content
- * @param {Object} [config.args] - 
+ * @param {string|fw/i18n/Message} [config.message] - message
+ * @param {Object} [config.args] - message arguments
  */
 class FwMessage extends FwElement {
 
@@ -26,10 +26,10 @@ class FwMessage extends FwElement {
      * Initialize the UI element
      * @method initialize
      * @private
-     */    
+     */
     initialize() {
-        this.label = null;
-        this.configLabel = this.config.label || null;
+        this.message = null;
+        this.configMessage = this.config.message || null;
     }
     /**
      * Process the node config
@@ -40,7 +40,7 @@ class FwMessage extends FwElement {
         var child = node.firstChild;
 
         if (child !== null && child.nodeType === 3 && child.nodeValue.trim().length > 0) {
-            this.configLabel = child.nodeValue;
+            this.configMessage = child.nodeValue;
         }
     }
     /**
@@ -49,22 +49,35 @@ class FwMessage extends FwElement {
      * @private
      */
     buildUI() {
-        this.setLabel(this.configLabel, this.config.args);
+        this.setMessage(this.configMessage, this.config.args);
     }
     /**
-     * Set the label
-     * @method setLabel
+     * Set the message
+     * @method setMessage
+     * @param {string|fw/i18n/Message} message - message content
+     * @param {Object} args - message arguments
+     *
      */
-    setLabel(label, args) {
-        this.label = this.createMessage(label, args);
+    setMessage(message, args) {
+        if (message instanceof Message) {
+            this.message = message;
+
+            if (args) {
+                this.message.setArgs(args);
+            }
+        } else {
+            this.message = this.createMessage(message, args);
+        }
+
         this.refresh();
     }
     /**
-     * Get the label 
-     * @method getLabel
+     * Get the message
+     * @method getMessage
+     * @return {fw/i18n/Message}
      */
-    getLabel() {
-        return this.label;
+    getMessage() {
+        return this.Message;
     }
     /**
      * Refresh the message
@@ -72,9 +85,8 @@ class FwMessage extends FwElement {
      */
     refresh() {
         fw.emptyNode(this.node);
-        this.node.appendChild(document.createTextNode(this.label));
+        this.node.appendChild(document.createTextNode(this.message));
     }
 }
 
 module.exports = FwMessage;
-

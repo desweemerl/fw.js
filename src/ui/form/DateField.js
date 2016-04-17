@@ -30,6 +30,11 @@ class FwDateField extends EditableFormElement {
      */
     static tagName = 'fw-datefield'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-datefield'; // jshint ignore:line   
+    /**
      * Define element type
      * @property type
      */

@@ -363,6 +363,11 @@ class FwScatterChart extends Chart {
      * @property tagName
      */
     static tagName = 'fw-scatterchart'; // jshint ignore:line
+    /**
+     * Define scatter chart className
+     * @property className
+     */
+    static className = 'fw-scatterchart'; // jshint ignore line
     /**    
      * Initialize the scatter chart element
      * @method initialize
@@ -529,23 +534,23 @@ class FwScatterChart extends Chart {
      * @private
      */
     buildUI() {
-        this.addClassName('chart');
         this.node = document.createElement('div');
         this.node.innerHTML = '\
             <div class="content">\
-                <div class="calculateSize"><span></span></div>\
-                <div class="spinner"><div><div></div></div></div>\
+                <div class="size"><span></span></div>\
+                <div class="fw-scatterchart-spinner"><div><div></div></div></div>\
             </div>';
         this.node.style.height = this.chartInfo.height + 'px';
         this.node.style.width = this.chartInfo.width + 'px';
 
-        this.contentNode = this.node.getElementsByClassName('content')[0];
-        this.spinnerNode = this.node.getElementsByClassName('spinner')[0];
+        this.contentNode = this.node.getElementsByClassName('fw-scatterchart-content')[0];
+        this.spinnerNode = this.node.getElementsByClassName('fw-scatterchart-spinner')[0];
 
-        this.calculateSizeNode = this.node.getElementsByClassName('calculateSize')[0];
+        this.calculateSizeNode = this.node.getElementsByClassName('fw-scatterchart-size')[0];
         this.calculateSizeTextNode = this.calculateSizeNode.childNodes[0];
 
         this.chartCanvas = document.createElement('canvas');
+        this.chartCanvas.classList.add('fw-scatterchart-canvas');
         this.chartCtx = this.chartCanvas.getContext('2d');
         this.chartInfo.context = this.chartCtx;
         this.chartCanvas.width = this.chartInfo.width;
@@ -553,12 +558,14 @@ class FwScatterChart extends Chart {
         this.contentNode.appendChild(this.chartCanvas);
 
         this.selectionCanvas = document.createElement('canvas');
+        this.selectionCanvas.classList.add('fw-scatterchart-canvas');
         this.selectionCtx = this.selectionCanvas.getContext('2d');
         this.selectionCanvas.width = this.chartInfo.width;
         this.selectionCanvas.height = this.chartInfo.height;
         this.contentNode.appendChild(this.selectionCanvas);
 
         this.tooltipCanvas = document.createElement('canvas');
+        this.tooltipCanvas.classList.add('fw-scatterchart-canvas');
         this.tooltipCtx = this.tooltipCanvas.getContext('2d');
         this.tooltipCanvas.width = this.chartInfo.width;
         this.tooltipCanvas.height = this.chartInfo.height;
@@ -1156,7 +1163,7 @@ class FwScatterChart extends Chart {
         }
 
         label = document.createElement('div');
-        label.classList.add('label');
+        label.classList.add('fw-scatterchart-label');
         label.style.fontFamily = this.tooltip.font.name;
         label.style.fontSize = this.tooltip.font.size + 'px';
         label.style.fontWeight = this.tooltip.font.weight || 'normal';
@@ -1172,7 +1179,7 @@ class FwScatterChart extends Chart {
         this.tooltipCtx.stroke();
 
         this.tooltipNode = document.createElement('div');
-        this.tooltipNode.classList.add('tooltip');
+        this.tooltipNode.classList.add('fw-scatterchart-tooltip');
         this.tooltipNode.style.paddingTop = this.tooltip.marginTop + 'px';
         this.tooltipNode.style.paddingBottom = this.tooltip.marginBottom + 'px';
         this.tooltipNode.style.paddingLeft = this.tooltip.marginLeft + 'px';
@@ -1183,7 +1190,7 @@ class FwScatterChart extends Chart {
         this.tooltipNode.appendChild(label);
 
         arrow = document.createElement('div');
-        arrow.classList.add('arrow');
+        arrow.classList.add('fw-scatterchart-arrow');
         arrow.classList.add(arrowClass);
         arrow.style.borderColor = pathColor;
 

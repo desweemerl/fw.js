@@ -30,6 +30,11 @@ class FwTextAreaField extends EditableFormElement {
      */
     static tagName = 'fw-textareafield'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-textareafield'; // jshint ignore:line
+    /**
      * Define element type
      * @property type
      */

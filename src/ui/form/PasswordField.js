@@ -30,6 +30,11 @@ class FwPasswordField extends EditableFormElement {
      */
     static tagName = 'fw-passwordfield'; // jshint ignore:line
     /**
+     * Define element classame
+     * @property className
+     */
+    static className = 'fw-passwordfield'; // jshint ignore:line
+    /**
      * Define element type
      * @property type
      */

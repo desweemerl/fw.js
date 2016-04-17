@@ -109,6 +109,10 @@ class FwElement {
         }
         // Add class in config
         classNames = types.isArray(config.classNames) ? config.classNames : [];
+        // Add class from element definition
+        if (!types.isEmptyString(this.constructor.className) && classNames.indexOf(this.constructor.className) === -1) {
+            classNames.push(this.constructor.className);
+        }
         // Add it className if defined
         if (!types.isEmptyString(config.className) && classNames.indexOf(config.className) === -1) {
             classNames.push(this.config.className);

@@ -27,6 +27,11 @@ class FwButton extends FocusableElement {
      */
     static tagName = 'fw-button'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-button'; // jshint ignore:line   
+    /**
      * Initialize the UI element
      * @method initialize
      * @private

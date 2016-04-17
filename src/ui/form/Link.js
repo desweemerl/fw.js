@@ -27,6 +27,11 @@ class FwLink extends FocusableFormElement {
      */
     static tagName = 'fw-link'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-link'; // jshint ignore:line
+    /**
      * Initialize the UI element
      * @method initialize
      * @private

@@ -38,6 +38,11 @@ class FwSelectField extends EditableFormElement {
      */
     static tagName = 'fw-selectfield'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-selectfield'; // jshint ignore:line
+    /**
      * Initialize the UI element
      * @method initialize
      * @private
@@ -69,11 +74,11 @@ class FwSelectField extends EditableFormElement {
      */
     buildUI() {
         this.node.innerHTML = '\
-            <div class="selectInput">\
+            <div class="fw-selectfield-input">\
                 <input type="text" spellcheck="false"></input>\
             </div>\
-            <div class="selectButton"><div><div></div></div></div>';
-        this.selectButtonNode = this.node.getElementsByClassName('selectButton')[0];
+            <div class="fw-selectfield-button"><div><div></div></div></div>';
+        this.selectButtonNode = this.node.getElementsByClassName('fw-selectfield-button')[0];
         this.selectInputNode = this.node.getElementsByTagName('input')[0];
         this.setFocusableNode(this.selectInputNode);
         this.listUlNode = null;
@@ -511,8 +516,9 @@ class FwSelectField extends EditableFormElement {
                 listNode.style.left = 0;
                 listNode.style.height = 0;
                 listNode.style.width = 0;
-                listNode.classList.add('selectFieldList');
+                listNode.classList.add('fw-selectfield-list');
                 this.listUlNode = document.createElement('ul');
+                this.listUlNode.classList.add('fw-selectfield-list-ul');
                 listNode.appendChild(this.listUlNode);
                 listNode.addEventListener('mouseover', function(listenerEvent) { self.onListMouseOver.call(self, listenerEvent); }, false);
                 listNode.addEventListener('mousedown', function(listenerEvent) { self.onListMouseDown.call(self, listenerEvent); }, false);
@@ -531,6 +537,7 @@ class FwSelectField extends EditableFormElement {
             for (n = 0; n < l; n++) {
                 label = labels[n];
                 child = document.createElement('li');
+                child.classList.add('fw-selectfield-list-li');
 
                 if (label === null || label.trim().length === 0) {
                     child.classList.add('empty');

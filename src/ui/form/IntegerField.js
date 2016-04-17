@@ -29,11 +29,16 @@ var KeyboardManager = require('../KeyboardManager');
  * @param {fw/validator/NumberValidator} [config.numberValidator] - add a numberValidator
  */
 class FwIntegerField extends EditableFormElement {
-     /**
+    /**
      * Define element tagName
      * @property tagName
      */
     static tagName = 'fw-integerfield'; // jshint ignore:line
+    /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-integerfield'; // jshint ignore:line
     /**
      * Define element type
      * @property type

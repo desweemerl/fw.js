@@ -77,15 +77,16 @@ class FwSearchField extends EditableFormElement {
      */
     buildUI() {
         if (this.addWindowModal) {
-            this.addClassName('searchButton');
+            this.addClassName('fw-searchfield-full');
             this.node.innerHTML = '\
-                <div class="searchInput">\
+                <div class="fw-searchfield-full-input">\
                     <input type="text" spellcheck="false"></input>\
                 </div>\
-                <div class="searchButton"><div><div></div></div></div>';
+                <div class="fw-searchfield-full-button"><div><div></div></div></div>';
 
-            this.searchButtonNode = this.node.getElementsByClassName('searchButton')[0];
+            this.searchButtonNode = this.node.getElementsByClassName('fw-searchfield-full-button')[0];
         } else {
+            this.addClassName('fw-searchField');
             this.node.innerHTML = '<input type="text" spellcheck="false"/>';
             this.searchInputNode = this.node.getElementsByTagName('input')[0];
         }
@@ -516,8 +517,9 @@ class FwSearchField extends EditableFormElement {
                             listNode.style.left = 0;
                             listNode.style.height = 0;
                             listNode.style.width = 0;
-                            listNode.classList.add('selectFieldList');
+                            listNode.classList.add('fw-seachfield-list');
                             self.listUlNode = document.createElement('ul');
+                            self.listUlNode.classList.add('fw-searchfield-list-ul');
                             listNode.appendChild(self.listUlNode);
                             listNode.addEventListener('mouseover', function(listenerEvent) { self.onListMouseOver.call(self, listenerEvent); }, false);
                             listNode.addEventListener('mousedown', function(listenerEvent) { self.onListMouseDown.call(self, listenerEvent); }, false);
@@ -536,6 +538,7 @@ class FwSearchField extends EditableFormElement {
                         for (n = 0; n < l; n++) {
                             label = self.labels[n];
                             child = document.createElement('li');
+                            child.classList.add('fw-searchfield-list-li');
 
                             if (label === null ||
                                 label.trim().length === 0) {

@@ -26,6 +26,11 @@ class FwCurrencyLabel extends FormElement {
      */
     static tagName = 'fw-currencylabel'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-currencylabel'; // jshint ignore:line   
+    /**
      * Define element type
      * @property type
      */

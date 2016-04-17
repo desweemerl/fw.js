@@ -30,6 +30,11 @@ class FwTimestampField extends EditableFormElement {
      */
     static tagName = 'fw-timestampfield'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-timestampfield'; // jshint ignore:line
+    /**
      * Define element type
      * @property type
      */
@@ -50,9 +55,12 @@ class FwTimestampField extends EditableFormElement {
      * @private
      */
     buildUI() {
-        this.node.innerHTML = '<div><input class="dateInput" type="text" spellcheck="false"></input></div><div><input class="timeInput" type="text"></input></div>';
-        this.dateInputNode = this.node.getElementsByClassName('dateInput')[0];
-        this.timeInputNode = this.node.getElementsByClassName('timeInput')[0];
+        var inputs;
+
+        this.node.innerHTML = '<div class="fw-timestampfield-date"><input type="text" spellcheck="false"></input></div><div class="fw-timestampfield-time"><input type="text"></input></div>';
+        input = document.getElementsByTagName('input');
+        this.dateInputNode = inputs[0];
+        this.timeInputNode = inputs[1]; 
         this.setFocusableNode(this.dateInputNode);
     }
     /**

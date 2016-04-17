@@ -25,6 +25,11 @@ class FwMenu extends FwElement {
      */
     static tagName = 'fw-menu'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-menu'; // jshint ignore:line   
+    /**
      * Define menu HORIZONTAL const
      */
     static HORIZONTAL = 0; // jshint ignore:line
@@ -94,11 +99,11 @@ class FwMenu extends FwElement {
 
                 if (fw.isString(menu.title)) {
                     spanNode = document.createElement('span');
-                    spanNode.classList.add('label');
+                    spanNode.classList.add('fw-menu-label');
                     spanNode.appendChild(document.createTextNode(this.createMessage(menu.title)));
                     liNode = document.createElement('li');
+                    liNode.classList.add('fw-menu-title');
                     liNode.appendChild(spanNode);
-                    liNode.classList.add('title');
                     this.ulNode.appendChild(liNode);
                 }
 
@@ -108,9 +113,10 @@ class FwMenu extends FwElement {
 
                         if (fw.isString(item.label)) {
                             spanNode = document.createElement('span');
-                            spanNode.classList.add('label');
+                            spanNode.classList.add('fw-menu-label');
                             spanNode.appendChild(document.createTextNode(this.createMessage(item.label)));
                             liNode = document.createElement('li');
+                            liNode.classList.add('fw-menu-item');
                             liNode.appendChild(spanNode);
                             liNode.index = index++;
                             this.ulNode.appendChild(liNode);
@@ -125,6 +131,7 @@ class FwMenu extends FwElement {
 
                 for (n = 0, l = menu.length; n < l; n++) {
                     liNode = document.createElement('li');
+                    liNode.classList.add('fw-menu-item');
                     liNode.appendChild(document.createTextNode(this.createMessage(menu[n].label)));
                     liNode.index = n;
                     this.ulNode.appendChild(liNode);
@@ -135,11 +142,11 @@ class FwMenu extends FwElement {
 
         if (fw.isString(this.menu.title)) {
             spanNode = document.createElement('span');
-            spanNode.classList.add('label');
+            spanNode.classList.add('fw-menu-label');
             spanNode.appendChild(document.createTextNode(this.createMessage(menu.title)));
             liNode = document.createElement('li');
+            liNode.classList.add('fw-menu-title');
             liNode.appendChild(spanNode);
-            liNode.classList.add('title');
             this.ulNode.appendChild(liNode);
         }
 
@@ -149,9 +156,10 @@ class FwMenu extends FwElement {
 
                 if (fw.isString(item.label)) {
                     spanNode = document.createElement('span');
-                    spanNode.classList.add('label');
+                    spanNode.classList.add('fw-menu-label');
                     spanNode.appendChild(document.createTextNode(this.createMessage(item.label)));
                     liNode = document.createElement('li');
+                    liNode.classList.add('fw-menu-item');
                     liNode.appendChild(spanNode);
                     liNode.index = index++;
                     this.ulNode.appendChild(liNode);

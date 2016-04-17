@@ -31,6 +31,11 @@ class FwFileUploadField extends FocusableElement {
      */
     static tagName = 'fw-fileuploadfield'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-fileuploadfield'; // jshint ignore:line
+    /**
      * Define the i18n dictionaries
      * @property i18n
      */
@@ -55,19 +60,19 @@ class FwFileUploadField extends FocusableElement {
      */
     buildUI() {
         this.node.innerHTML = '\
-            <div class="action">\
+            <div class="fw-fileuploadfield-action">\
                 <input type="file"></input>\
-                <div tabIndex="0" class="chooseFiles"></div>\
+                <div tabIndex="0" class="fw-fileuploadfield-choice"></div>\
             </div>\
-            <div class="filesView">\
+            <div class="fw-fileuploadfield-view">\
                  <table><tbody></tbody></table>\
             </div>';
-        this.chooseFilesNode = this.node.getElementsByClassName('chooseFiles')[0];
+        this.choiceNode = this.node.getElementsByClassName('fw-fileuploadfield-choice')[0];
         this.inputNode = this.node.getElementsByTagName('input')[0];
         this.bodyNode = this.node.getElementsByTagName('tbody')[0];
-        this.viewNode = this.node.getElementsByClassName('filesView')[0];
+        this.viewNode = this.node.getElementsByClassName('fw-fileuploadfield-view')[0];
         this.setMultiple(this.multiple);
-        this.setFocusableNode(this.chooseFilesNode);
+        this.setFocusableNode(this.choiceNode);
     }
     /**
      * Bind events to the node
@@ -107,7 +112,7 @@ class FwFileUploadField extends FocusableElement {
      */ 
     onBlur() {
         this.removeClass('focused');
-        this.chooseFilesNode.classList.remove('activated');
+        this.choiceNode.classList.remove('activated');
     }
     /**
      * keydown event handler
@@ -116,7 +121,7 @@ class FwFileUploadField extends FocusableElement {
      */
     onKeyDown(e) {
         if (KeyboardManager.isActive('ENTER') || KeyboardManager.isActive('SPACE')) {
-            this.chooseFilesNode.classList.add('activated');
+            this.choiceNode.classList.add('activated');
             this.inputNode.value = '';
             this.inputNode.click();
             e.preventDefault();
@@ -130,7 +135,7 @@ class FwFileUploadField extends FocusableElement {
      * @private
      */
     onKeyUp() {
-        this.chooseFilesNode.classList.remove('activated');
+        this.choiceNode.classList.remove('activated');
     }
     /**
      * mousedown event handler
@@ -138,8 +143,8 @@ class FwFileUploadField extends FocusableElement {
      * @private
      */
     onMouseDown(e) {
-        if (e.target === this.chooseFilesNode) {
-            this.chooseFilesNode.classList.add('activated');
+        if (e.target === this.choiceNode) {
+            this.choiceNode.classList.add('activated');
         }
     }
     /**
@@ -199,7 +204,7 @@ class FwFileUploadField extends FocusableElement {
     onClick(e) {
         var row;
 
-        if (e.target === this.chooseFilesNode) {
+        if (e.target === this.choiceNode) {
             if (!this.disabled) {
                 this.inputNode.value = '';
                 this.inputNode.click();
@@ -244,7 +249,7 @@ class FwFileUploadField extends FocusableElement {
       * @private
       */
      desactivate() {
-         this.chooseFilesNode.classList.remove('activated');
+         this.choiceNode.classList.remove('activated');
      }
      /**
      * Set the FileUploadSource
@@ -295,7 +300,7 @@ class FwFileUploadField extends FocusableElement {
             this.viewNode.add('multiple');
         } else {
             this.inputNode.setAttribute('multiple', '');
-            this.viewNide.remove('multiple');
+            this.viewNode.remove('multiple');
         }
     }
     /**
@@ -323,7 +328,7 @@ class FwFileUploadField extends FocusableElement {
 
             row = document.createElement('tr');
             row.file = file;
-            row.innerHTML = '<td class="fileName"><div>' + file.name + '</div></td><td class="info"><div class="status">' + self.createMessage('waiting') + '</div></td><td class="cancel"><div></div></td>';
+            row.innerHTML = '<td class="fw-fileuploadfield-filename"><div>' + file.name + '</div></td><td class="fw-fielduploadfield-info"><div class="fw-fileuploadfield-status">' + self.createMessage('waiting') + '</div></td><td class="fw-fileuploadfield-cancel"><div></div></td>';
             self.bodyNode.appendChild(row);
 
             file.onChangeState = function(state) {
@@ -340,10 +345,10 @@ class FwFileUploadField extends FocusableElement {
                         } else {
                             fw.emptyNode(infoNode);
                             progressBarNode = document.createElement('div');
-                            progressBarNode.classList.add('progressBar');
+                            progressBarNode.classList.add('fw-fileuploadfield-progressbar');
                             infoNode.appendChild(progressBarNode);
                             fullNode = document.createElement('div');
-                            fullNode.classList.add('full');
+                            fullNode.classList.add('fw-fileuploadfield-full');
                             progressBarNode.appendChild(fullNode);
                             cancelNode.innerHTML = '<div></div>';
                         }
@@ -351,19 +356,19 @@ class FwFileUploadField extends FocusableElement {
                         fullNode.style.width = String(file.progress) + '%';
                         break;
                     case FileUploadSource.STATE_UPLOADED:
-                        infoNode.innerHTML = '<div class="status">' + self.createMessage('uploaded') + '</div>';
+                        infoNode.innerHTML = '<div class="fw-fileuploadfield-status">' + self.createMessage('uploaded') + '</div>';
                         fw.emptyNode(cancelNode);
                         break;
                     case FileUploadSource.STATE_SUCCESSFUL:
-                        infoNode.innerHTML = '<div class="status successful">' + self.createMessage('successful') + '</div>';
+                        infoNode.innerHTML = '<div class="fw-fileuploadfield-status successful">' + self.createMessage('successful') + '</div>';
                         fw.emptyNode(cancelNode);
                         break;
                     case FileUploadSource.STATE_CANCELLED:
-                        infoNode.innerHTML = '<div class="status">' + self.createMessage('cancelled') + '</div>';
+                        infoNode.innerHTML = '<div class="fw-fileuploadfield-status">' + self.createMessage('cancelled') + '</div>';
                         fw.emptyNode(cancelNode);
                         break;
                     case FileUploadSource.STATE_ERROR:
-                        infoNode.innerHTML = '<div class="status error">' + self.createMessage('error') + '</div>';
+                        infoNode.innerHTML = '<div class="fw-fileuploadfield-status error">' + self.createMessage('error') + '</div>';
                         fw.emptyNode(cancelNode);
                         break;
                 }

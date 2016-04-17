@@ -480,13 +480,13 @@ var I18n = {
             } else if (dictionary instanceof Array) {
                 for (n = dictionary.length - 1; n >= 0; n--) {
                     messageTr = processDictionary(dictionary[n]);
-                    if (messageTr !== undefined) return messageTr;
+                    if (!fw.isEmptyString(messageTr)) return messageTr;
                 }
             } else if (types.isObject(dictionary)) {
                 messageTr = getMessage(dictionary);
             }
 
-            return messageTr;
+            return fw.isEmptyString(messageTr) ? null : messageTr;
         }
 
         if (types.isEmptyString(options.message)) return '';
@@ -515,7 +515,7 @@ var I18n = {
         if (dictionaries) {
             for (n = dictionaries.length - 1; n >= 0; n--) {
                 messageTr = processDictionary(dictionaries[n]);
-                if (messageTr !== undefined) break;
+                if (messageTr) break;
             }
         }
 

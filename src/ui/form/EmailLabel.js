@@ -25,6 +25,11 @@ class FwEmailLabel extends FormElement {
      */
     static tagName = 'fw-emaillabel'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-emaillabel'; // jshint ignore:line
+    /**
      * Define element type
      * @property type
      */
@@ -35,6 +40,7 @@ class FwEmailLabel extends FormElement {
      * @private
      */
     buildUI() {
+        this.node.classList.add('fw-emaillabel');
         this.linkNode = document.createElement('a');
         this.node.appendChild(this.linkNode);
     }

@@ -25,6 +25,11 @@ class FwTimestampLabel extends FormElement {
      */
     static tagName = 'fw-timestamplabel'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-timestamplabel'; // jshint ignore:line
+    /**
      * Define element type
      * @property type
      */

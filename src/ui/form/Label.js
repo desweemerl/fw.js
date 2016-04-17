@@ -27,6 +27,11 @@ class FwLabel extends FormElement {
      */
     static tagName = 'fw-label'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-label'; // jshint ignore:line
+    /**
      * Initialize the UI element
      * @method initialize
      * @private

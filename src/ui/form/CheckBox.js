@@ -28,6 +28,11 @@ class FwCheckBox extends EditableFormElement {
      */
     static tagName = 'fw-checkbox'; // jshint ignore:line
     /**
+     * Define element className
+     * @property className
+     */
+    static className = 'fw-checkbox'; // jshint ignore:line   
+    /**
      * Define element type
      * @property type
      */
@@ -49,8 +54,8 @@ class FwCheckBox extends EditableFormElement {
      * @private
      */
     buildUI() {
-        this.node.innerHTML = '<div tabindex="0" class="checkboxFrame"></div>';
-        this.frameNode = this.node.getElementsByClassName('checkboxFrame')[0];
+        this.node.innerHTML = '<div tabindex="0" class="fw-checkbox-frame"></div>';
+        this.frameNode = this.node.getElementsByClassName('fw-checkbox-frame')[0];
 
         this.setFocusableNode(this.frameNode);
         this.setLabel(this.config.label);
@@ -196,7 +201,7 @@ class FwCheckBox extends EditableFormElement {
             this.node.appendChild(this.labelNode);
         }
 
-        this.labelNode.setAttribute('class', 'checkboxLabel');       
+        this.labelNode.setAttribute('class', 'fw-checkbox-label');       
         this.labelNode.appendChild(document.createTextNode(this.label));
     }
     /**
