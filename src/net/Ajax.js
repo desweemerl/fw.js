@@ -14,7 +14,6 @@ var types = require('../types');
  * Create an instance of fw/net/Ajax which behaves like fw/Promise
  * @class
  * @alias module:fw/net/Ajax
- * @augments fw/Promise
  * @param {string} [url] - the URL of ajax request
  * @param {Object} [options] - optional parameters
  * @param {string} [options.url] - the URL of ajax request
@@ -26,7 +25,7 @@ var types = require('../types');
  * @param {function} [options.onProgress] - callback function call when request is in progress
  * @param {function} [options.onLoadEnd] - callback function call when request ends* 
  */
-class FwAjax extends FwPromise {
+class FwAjax {
     /**
      * @constructor
      */
@@ -45,9 +44,8 @@ class FwAjax extends FwPromise {
             // Add a timestamp a the url end to avoid caching (IE fix)
             url += '&' + new Date().getTime();
         }           
-        
-        // Start the Ajax Promise
-        super(function(resolve, reject) {
+       
+        this.promise = new FwPromise(function(resolve, reject) {
             var key;
 
             self.xhr = new XMLHttpRequest();
@@ -134,7 +132,7 @@ class FwAjax extends FwPromise {
                         });
                     }
                     // If not, the Ajax Promise is rejected
-                    else {
+                    ²else {
                         reject(new AjaxError({
                             i18n:    options.i18n,
                             status:  status,
@@ -147,8 +145,6 @@ class FwAjax extends FwPromise {
             // Start the ajax request
             self.xhr.send(type === 'POST' || type === 'PUT' || type === 'PATCH' ? data : undefined);
         });
-
-        return this;
     }
     /**
      * "then" function process fulfilled and rejected ajax request
@@ -158,12 +154,17 @@ class FwAjax extends FwPromise {
      * @return {fw/Promise}
      */
     then(onFulfilled, onRejected) {
-        var promise = super.then(onFulfilled, onRejected);
-
-        promise.xhr = this.xhr;
-
-        return promise;
+        return this.promise.then(onFulfilled, onRejected);
     }
+    /**
+     * "catch" function process rejected ajax request
+     * @method catch
+     * @param {function} onRejected - called when ajax request is rejected
+     * @return {fw/Promise}
+     */
+    catch(onRejected) {
+        return this.promise.catch(onRejected);
+    }   
     /**
      * "abort" function process rejected ajax request
      * @method abort

@@ -24,6 +24,7 @@ class Message {
      */
     constructor(config) {
         config = config || {};
+
         this.setMessage(config.message);
         this.setArgs(config.args);
         this.setI18n(config.i18n);

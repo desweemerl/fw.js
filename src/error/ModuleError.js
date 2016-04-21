@@ -23,6 +23,8 @@ class ModuleError extends Error {
      * @constructor
      */
     constructor(error) {
+        super();
+
         if (types.isObject(error)) {
             if (types.isString(error.moduleName)) { this.moduleName = error.moduleName; }
             if (types.isString(error.message))    { this.message = error.message; }

@@ -23,7 +23,7 @@ class FwTime {
     /**
      * @constructor
      */
-    init(time) {
+    constructor(time) {
         this.setTime(time);
     }
     /**

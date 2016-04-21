@@ -89,6 +89,8 @@ class NumberValidator extends Validator {
      * @constructor
      */
     constructor(config) {
+        super();
+
         config = config || {};
         config.messages = config.messages || {};
 

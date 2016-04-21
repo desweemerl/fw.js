@@ -50,6 +50,8 @@ class RequiredValidator extends Validator {
      * @constructor
      */
     constructor(config) {
+        super();
+
         config = config || {};
 
         this.required = config.required === undefined ? true : config.required;

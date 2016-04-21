@@ -23,6 +23,8 @@ class ModelError extends Error {
      * @constructor
      */
     constructor(error) {
+        super();
+
         if (types.isObject(error)) {
             if (types.isString(error.modelName)) { this.modelName = error.modelName; }
             if (types.isString(error.message))   { this.message = error.message; }

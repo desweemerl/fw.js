@@ -44,7 +44,7 @@ class CheckValidator extends Validator {
      * @constructor
      */
     constructor(config) {
-        config = config || {};
+        super();
 
         this.check = config.check;
         this.i18n = config.i18n || null;

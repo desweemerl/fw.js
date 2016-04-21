@@ -30,9 +30,9 @@ class SearchSource extends AjaxSource {
      * @constructor
      */
     constructor(config) {
-        var self = this;
-
         super(config);
+
+        var self = this;
 
         this.list = [];
         this.element = null;

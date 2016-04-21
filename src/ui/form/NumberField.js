@@ -50,6 +50,8 @@ class FwNumberField extends EditableFormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.originalValue = null;
         this.integer = this.config.integer || false;
         this.required = this.config.required || false;

@@ -24,8 +24,8 @@ class FwTimestamp {
     /**
      * @constructor
      */
-    constructor() {
-        this.setTimestamp.apply(this, arguments);
+    constructor(timestamp) {
+        this.setTimestamp(timestamp);
     }
     /**
      * Set the timestamp

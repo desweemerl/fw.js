@@ -32,7 +32,7 @@ function processHandler(promise, handler, type) {
                 return output === undefined ? data : output;
             });
         } else if (handler.fail) {
-            promise.catch (function (error) {
+            promise.catch(function (error) {
                 var output = handler.fail(error);
 
                 if (output === undefined) {
@@ -51,7 +51,7 @@ function processRequest(self, type, options) {
     var url = self.url;
     var n = 0;
     var l = self.actions.length;
-    var data, ajaxPromise, action, promise;
+    var data, ajaxInstance, action, promise;
 
     // Remove all the actions completed or cancelled
     while (n < l) {
@@ -80,7 +80,7 @@ function processRequest(self, type, options) {
     // Set the instance active
     self.active = true;
     // Create a starting promise
-    promise = new FwPromise.resolve();
+    promise = FwPromise.resolve();
     // Set the state of the promise in waiting
     promise.state = RestStore.STATE_WAITING;
     // Append with success and fail handlers before the ajax request
@@ -97,8 +97,8 @@ function processRequest(self, type, options) {
         // Set the state of the promise in progress
         promise.state = RestStore.STATE_IN_PROGRESS;
         // Create an ajax request and register in the ajax requests store
-        self.ajaxPromises.push(
-            ajaxPromise = new FwAjax({
+        self.ajaxInstances.push(
+            ajaxInstance = new FwAjax({
                 url:      url,
                 type:     type,
                 timeout:  options.timeout || self.timeout,
@@ -107,20 +107,20 @@ function processRequest(self, type, options) {
             })
         );
         // Keep track of the ajax request
-        promise.ajaxPromise = ajaxPromise;
-        promise.xhr = ajaxPromise.xhr;
+        promise.ajaxInstance = ajaxInstance;
+        promise.xhr = ajaxInstance.xhr;
 
-        return ajaxPromise;
+        return ajaxInstance.promise;
     }).then(
     // Return data when the ajax request is successful and remove the ajax request in the ajax requests store
     function(response) {
-        var index = self.ajaxPromises.indexOf(ajaxPromise);
+        var index = self.ajaxInstances.indexOf(ajaxInstance);
 
         if (index !== -1) {
-            self.ajaxPromises.splice(index, 1);
+            self.ajaxInstances.splice(index, 1);
         }
         // Desactivate the instance when no request is no longer in progress
-        if (self.ajaxPromises.length === 0) {
+        if (self.ajaxInstances.length === 0) {
             self.active = false;
         }
         // Set the state of the promise in success
@@ -130,13 +130,13 @@ function processRequest(self, type, options) {
     },
     // Remove the ajax request in the ajax requests store and throw the error
     function(error) {
-        var index = self.ajaxPromises.indexOf(ajaxPromise);
+        var index = self.ajaxInstances.indexOf(ajaxInstance);
 
         if (index !== -1) {
-            self.ajaxPromises.splice(index, 1);
+            self.ajaxInstances.splice(index, 1);
         }
         // Desactivate the instance when no request is no longer in progress
-        if (self.ajaxPromises.length === 0) {
+        if (self.ajaxInstances.length === 0) {
             self.active = false;
         }
         // Set the state of the promise in cancel when the request is aborted
@@ -181,7 +181,7 @@ class RestStore {
         this.timeout = this.config.timeout;
         this.url = this.config.url || '';
         this.active = false;
-        this.ajaxPromises = [];
+        this.ajaxInstances = [];
         this.actions = [];
         this.beforeHandlers = [];
         this.handlers = [];
@@ -290,9 +290,9 @@ class RestStore {
         // Desactivate the RestStore
         this.active = false;
         // Abort all the ajax requests in progress
-        while (this.ajaxPromises.length > 0) {
-            this.ajaxPromises[0].abort();
-            this.ajaxPromises.splice(0, 1);
+        while (this.ajaxInstances.length > 0) {
+            this.ajaxInstances[0].abort();
+            this.ajaxInstances.splice(0, 1);
         }
         // Cancel all the actions
         for (n = 0, l = this.actions.length; n < l; n++) {
@@ -313,8 +313,8 @@ class RestStore {
     abortAction(action) {
         // Cancel the action if registered
         if (this.actions.indexOf(action) !== -1) {
-            if (action.ajaxPromise) {
-                action.ajaxPromise.abort();
+            if (action.ajaxInstance) {
+                action.ajaxInstance.abort();
             }
 
             if (action.state < RestStore.STATE_CANCELLED) {

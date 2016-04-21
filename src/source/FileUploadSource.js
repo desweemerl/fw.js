@@ -61,7 +61,7 @@ class FileUploadSource extends NetSource {
     constructor(config) {
         super(config);
 
-        this.ajaxPromises = [];
+        this.ajaxInstances = [];
         this.files = [];
     }
     /**
@@ -84,6 +84,7 @@ class FileUploadSource extends NetSource {
      */
     unbind() {
         if (this.fileUploadField === null) return;
+
         this.abort();
         this.fileUploadField.fileUploadSource = null;
         this.fileUploadField = null;
@@ -143,7 +144,7 @@ class FileUploadSource extends NetSource {
         // Upload file
         function uploadFile(file) {
             var n, l;
-            var uploadPromise, promise, ajaxPromise;
+            var uploadPromise, promise, ajaxInstance;
             // Check if the file state is cancelled
             if (file.state === FileUploadSource.STATE_CANCELLED) {
                 // If cancelled, return a rejected promise
@@ -181,7 +182,7 @@ class FileUploadSource extends NetSource {
                     formData.append('parameters', JSON.stringify(self.processParameters(parameters)));
                 }
                 // Create an ajax request and register in the ajax requests store
-                self.ajaxPromises.push(ajaxPromise = new FwAjax({
+                self.ajaxInstances.push(ajaxInstance = new FwAjax({
                     url:        self.url,
                     type:       'POST',
                     data:       formData,
@@ -217,60 +218,60 @@ class FileUploadSource extends NetSource {
                     }
                 }));
 
-                file.ajaxPromise = ajaxPromise;
+                file.ajaxInstance = ajaxInstance;
 
-                return ajaxPromise;
+                return ajaxInstance.promise;
             }).then(
-            // Remove the ajax request in the ajax requests store and set file state to sucessful
-            function(response) {
-                var index = self.ajaxPromises.indexOf(ajaxPromise);
+                // Remove the ajax request in the ajax requests store and set file state to sucessful
+                function(response) {
+                    var index = self.ajaxInstances.indexOf(ajaxInstance);
 
-                if (index !== -1) {
-                    self.ajaxPromises.splice(index, 1);
-                }
-                // Desactivate the instance when no request is no longer in progress
-                if (self.ajaxPromises.length === 0) {
-                    self.active = false;
-                }
+                    if (index !== -1) {
+                        self.ajaxInstances.splice(index, 1);
+                    }
+                    // Desactivate the instance when no request is no longer in progress
+                    if (self.ajaxInstances.length === 0) {
+                        self.active = false;
+                    }
 
-                if (file.state === FileUploadSource.STATE_UPLOADED) {
-                    file.state = FileUploadSource.STATE_SUCCESSFUL;
+                    if (file.state === FileUploadSource.STATE_UPLOADED) {
+                        file.state = FileUploadSource.STATE_SUCCESSFUL;
+                        if (types.isFunction(file.onChangeState)) {
+                            file.onChangeState(file.state);
+                        }
+                    }
+
+                    return response;
+                },
+                // Remove the ajax request in the ajax requests store and set file state to error
+                // or cancelled if the request was aborted
+                function(error) {
+                    var index = self.ajaxInstances.indexOf(ajaxInstance);
+
+                    if (index !== -1) {
+                        self.ajaxInstances.splice(index, 1);
+                    }
+
+                    if (self.ajaxInstances.length === 0) {
+                        self.active = false;
+                    }
+                    // Set the file state of the promise to cancelled when the request is aborted
+                    if (error instanceof AjaxError) {
+                        if (error.status === AjaxError.REQUEST_ABORTED) {
+                            file.state = FileUploadSource.STATE_CANCELLED;
+                        }
+                    }
+                    // Set the file state to error when the request is not cancelled
+                    if (file.state !== FileUploadSource.STATE_CANCELLED) {
+                        file.state = FileUploadSource.STATE_ERROR;
+                    }
+
                     if (types.isFunction(file.onChangeState)) {
                         file.onChangeState(file.state);
                     }
-                }
 
-                return response;
-            },
-            // Remove the ajax request in the ajax requests store and set file state to error
-            // or cancelled if the request was aborted
-            function(error) {
-                var index = self.ajaxPromises.indexOf(ajaxPromise);
-
-                if (index !== -1) {
-                    self.ajaxPromises.splice(index, 1);
+                    throw error;
                 }
-
-                if (self.ajaxPromises.length === 0) {
-                    self.active = false;
-                }
-                // Set the file state of the promise to cancelled when the request is aborted
-                if (error instanceof AjaxError) {
-                    if (error.status === AjaxError.REQUEST_ABORTED) {
-                        file.state = FileUploadSource.STATE_CANCELLED;
-                    }
-                }
-                // Set the file state to error when the request is not cancelled
-                if (file.state !== FileUploadSource.STATE_CANCELLED) {
-                    file.state = FileUploadSource.STATE_ERROR;
-                }
-
-                if (types.isFunction(file.onChangeState)) {
-                    file.onChangeState(file.state);
-                }
-
-                throw error;
-            }
             );
             // Append with success and fail handlers
             for (n = 0, l = self.handlers.length; n < l; n++) {
@@ -300,9 +301,9 @@ class FileUploadSource extends NetSource {
         // Desactivate the FileUploadSource
         this.active = false;
         // Abort all the ajax requests in progress
-        while (this.ajaxPromises.length > 0) {
-            this.ajaxPromises[0].abort();
-            this.ajaxPromises.splice(0, 1);
+        while (this.ajaxInstances.length > 0) {
+            this.ajaxInstances[0].abort();
+            this.ajaxInstances.splice(0, 1);
         }
         // Set all files state in queue cancelled
         for (n = 0, l = this.files.length; n < l; n++) {
@@ -328,8 +329,8 @@ class FileUploadSource extends NetSource {
         // Set the file in cancelled state if this file exists in the queue
         if (this.files.indexOf(file) !== -1) {
 
-            if (file.ajaxPromise) {
-                file.ajaxPromise.abort();
+            if (file.ajaxInstance) {
+                file.ajaxInstance.abort();
             }
 
             if (file.state < FileUploadSource.STATE_CANCELLED) {

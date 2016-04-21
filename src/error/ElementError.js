@@ -22,6 +22,8 @@ class ElementError extends Error {
      * @constructor 
      */   
     constructor(error) {
+        super();
+
         if (types.isObject((error))) {
             if (types.isString(error.elementName)) { this.elementName = error.elementName; }
             if (types.isString(error.message))     { this.message = error.message; }

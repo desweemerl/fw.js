@@ -34,9 +34,9 @@ class PaginatedArraySource extends AjaxSource {
      * @constructor
      */
     constructor(config) {
-        var self = this;
-
         super(config);
+
+        var self = this;
 
         this.size = this.config.size || 10;
         this.url = this.config.url || null;

@@ -57,7 +57,7 @@ class AjaxSource extends NetSource {
     constructor(config) {
         super(config);
 
-        this.ajaxPromise = null;
+        this.ajaxInstance = null;
     }
     /**
      * Abort the request
@@ -67,8 +67,8 @@ class AjaxSource extends NetSource {
     abort() {
         this.active = false;
 
-        if (this.ajaxPromise !== null) {
-            this.ajaxPromise.abort();
+        if (this.ajaxInstance !== null) {
+            this.ajaxInstance.abort();
         }
 
         return this;
@@ -107,7 +107,7 @@ class AjaxSource extends NetSource {
                 options instanceof DataSource ? options.getObject() : options);
 
             // Create an ajax request
-            self.ajaxPromise = new FwAjax({
+            self.ajaxInstance = new FwAjax({
                 type:     'POST',
                 dataType: 'json',
                 url:      self.url,
@@ -115,19 +115,19 @@ class AjaxSource extends NetSource {
                 data:     self.processParameters(parameters)
             });
 
-            return self.ajaxPromise;
+            return self.ajaxInstance.promise;
         }).then(
             // Store data when ajax request is successful, hide spinners and desactivate the AjaxSource
             function(response) {
                 self.active = false;
-                self.ajaxPromise = null;
+                self.ajaxInstance = null;
 
                 return response;
             },
             // Desactivate the ChartSource and hide spinners
             function(error) {
                 self.active = false;
-                self.ajaxPromise = null;
+                self.ajaxInstance = null;
 
                 throw error;
             }

@@ -40,6 +40,7 @@ class FwProgressBar extends ElementModal {
      */
     initialize() {
         super.initialize();
+
         this.message = null;
         this.percentage = null;
         this.height = this.config.height || '1.5em';

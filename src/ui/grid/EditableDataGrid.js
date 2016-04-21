@@ -68,6 +68,8 @@ class EditableDataGrid extends ArrayElement {
      * @private
      */    
     initialize() {
+        super.initialize();
+
         var column, type;
         var n, l;
 

@@ -36,9 +36,9 @@ class ArraySource extends Source {
      * @constructor
      */
     constructor(config) {
-        var self = this;
-
         super(config);
+       
+        var self = this;
 
         this.elements = [];
         this.onChangeSource = this.config.onChangeSource || null;

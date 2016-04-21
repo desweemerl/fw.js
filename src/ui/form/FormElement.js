@@ -24,7 +24,6 @@ class FormElement extends FwElement {
      * @constructor
      */
     constructor(config) {
-        this.value = null;
         // Call Element initialization
         super(config);
         // Define property and dataSource
@@ -34,6 +33,14 @@ class FormElement extends FwElement {
         if (!(this.dataSource instanceof DataSource)) {
             this.setValue(this.config.value || this.value);
         }
+    }
+    /**
+     * Initialize the UI element
+     * @method initialize
+     * @private
+     */  
+    initialize() {
+        this.value = null;
     }
     /**
      * Bind all events to the node

@@ -48,6 +48,8 @@ class FwSearchField extends EditableFormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.labels = [];
         this.options = [];
         this.item = {};

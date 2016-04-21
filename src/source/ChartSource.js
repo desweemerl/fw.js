@@ -32,9 +32,9 @@ class ChartSource extends AjaxSource {
      * @constructor
      */
     constructor(config) {
-        var self = this;
+        super(config);
 
-        AjaxSource.super(config);
+        var self = this;
 
         this.series = [];
         this.limits = [];

@@ -45,6 +45,8 @@ class FwTimeField extends EditableFormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.originalValue = null;
         this.required = this.config.required || false;
         this.requiredValidator = this.config.requiredValidator || null;

@@ -23,6 +23,8 @@ class SourceError extends Error {
      * @constructor
      */
     constructor(error) {
+        super();
+        
         if (types.isObject(error)) {
             if (types.isString(error.sourceName)) { this.sourceName = error.sourceName; }
             if (types.isString(error.message))    { this.message = error.message; }

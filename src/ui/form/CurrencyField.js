@@ -50,6 +50,8 @@ class FwCurrencyField extends EditableFormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.originalValue = null;
         this.required = this.config.required || false;
         this.minValue = this.config.minValue || null;

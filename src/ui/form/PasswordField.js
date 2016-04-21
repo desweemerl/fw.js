@@ -45,6 +45,8 @@ class FwPasswordField extends EditableFormElement {
      * @private
      */       
     initialize() {
+        super.initialize();
+        
         this.originalValue = null;
         this.maxLength = this.config.maxLength || null;
         this.required = this.config.required || false;

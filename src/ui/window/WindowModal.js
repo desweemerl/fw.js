@@ -49,6 +49,7 @@ class FwWindowModal extends ElementModal {
      */  
     initialize() {
         super.initialize();
+
         this.title = null;
         this.configContentNode =  this.config.contentNode || null;
         this.maxSize = this.config.maxSize || false;

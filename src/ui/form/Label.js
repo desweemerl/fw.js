@@ -37,6 +37,8 @@ class FwLabel extends FormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.formatHTML = this.config.formatHTML || this.formatHTML || false;
         this.prepareValue = this.config.prepareValue || null;
     }
@@ -46,7 +48,7 @@ class FwLabel extends FormElement {
      * @param {Node} node
      * @return {Object} properties
      */
-    proccesNode(node) {
+    processNode(node) {
         return {
             property:   node.getAttribute('property'),
             formatHTML: node.getAttribute('formatHTML')

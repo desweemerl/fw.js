@@ -10,29 +10,26 @@ var Message = require('./Message');
 /**
  * Bring internationalization to a class
  * @class
- * @alias module:fw/ui/Element
+ * @alias module:fw/i18n/Translator
  * @param {Object} config - the configuration object parameter
  * @param {Object} [config.i18n] - the dictionary which contains the translations
  * @param {boolean} [config.visible] - set the visibility of the UI Element
  * @param {Node} node - the base node of the UI Element
  */
-class Translator {
-    /**
-     * @constructor
-     */
-    constructor(config) {
-        config = config || {};
-        // Add internationalization to the object
-        this.i18n = config.i18n || null;
-    }
-    /**
-     * Create a translated message
-     * @method createMessage
-     * @param {string} message - message to be translated
-     * @param {Object} args - message arguments
-     * @return {fw/i18n/Message}
-     */
-    createMessage(message, args) {
+function Translator(config) {
+    config = config || {};
+    // Add internationalization to the object
+    this.i18n = config.i18n || null;
+}
+/**
+ * Create a translated message
+ * @method createMessage
+ * @param {string} message - message to be translated
+ * @param {Object} args - message arguments
+ * @return {fw/i18n/Message}
+ */
+Translator.prototype = {
+    createMessage: function(message, args) {
         var i18n;
 
         if (this.constructor.i18n) {

@@ -37,6 +37,8 @@ class FwLink extends FocusableFormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.label = null;
         this.configLabel = this.config.label || null;
         this.onClick = this.config.onClick || null;

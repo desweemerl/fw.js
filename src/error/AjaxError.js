@@ -25,6 +25,8 @@ class AjaxError extends Error {
      * @constructor
      */
     constructor(error) {
+        super();
+
         error = error || {};
 
         var i18n;

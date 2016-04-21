@@ -15,37 +15,35 @@ var fw = require('../Core');
  * @param {Object} config - the configuration object parameter
  * @param {boolean} [config.disabled] - disable the form element
  */
-class Focusify {
-    /**
-     * @constructor
-     */
-    constructor(config) {
-        // Set the element focusable or unfocusabled
-        this.setDisabled(this.config.disabled || this.disabled);
-	}
+function Focusify(config) {
+    // Set the element focusable or unfocusabled
+    this.setDisabled(this.config.disabled || this.disabled);
+}
+
+Focusify.prototype = {
     /**
      * Bind events to the node
      * @method bindUI
      */
-    bindUI() {
+    bindUI: function() {
         this.onAttributeChange('disabled', this.setDisabled);
-    }
+    },
     /**
      * Set the focus on the FocusableElement
      * @method focus
      */
-    focus() {
+    focus: function() {
        if (this.disabled) return false;
        this.getFocusableNode().focus();
 
        return true;
-    }
+    },
     /**
      * Disable the Element
      * @method setDisabled
      * @param {boolean} disabled - disable the Element
      */
-    setDisabled(disabled) {
+    setDisabled: function(disabled) {
         disabled = fw.isString(disabled) ? disabled === 'true' : !!disabled; 
 
         if (this.disabled !== disabled) {
@@ -59,13 +57,13 @@ class Focusify {
                 this.setFocusable(true);
             }
         }
-    }
+    },
     /**
      * Set the Element focusable
      * @method setFocusable
      * @param {boolean} focusable
      */
-    setFocusable(focusable) {
+    setFocusable: function(focusable) {
         focusable = !!focusable;
 
         var focusableNode = this.getFocusableNode();
@@ -89,21 +87,21 @@ class Focusify {
         }
 
         this.focusable = focusable;
-    }
+    },
     /**
      * Define the focusable node
      * @method setFocusableNode
      * @param {Node} focusableNode 
      */
-    setFocusableNode(focusableNode) {
+    setFocusableNode: function(focusableNode) {
         this.focusableNode = focusableNode instanceof Node ? focusableNode : null;
-    }
+    },
     /**
      * Get the focusable node
      * @method getFocusableNode
      * @return {Node}
      */
-    getFocusableNode() {
+    getFocusableNode: function() {
         return this.focusableNode instanceof Node ? this.focusableNode : this.node;
     }
 }

@@ -35,9 +35,10 @@ class DataSource extends Source {
      * @constructor
      */
     constructor(config) {
+        super(config);
+
         var self = this;
 
-        this.config = config || {};
         this.elements = [];
         this.elementsByProperty = {};
         this.onChangeSource = this.config.onChangeSource || null;

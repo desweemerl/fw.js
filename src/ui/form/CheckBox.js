@@ -43,6 +43,8 @@ class FwCheckBox extends EditableFormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.updated = false;
         this.value = false;
         this.originalValue = false;

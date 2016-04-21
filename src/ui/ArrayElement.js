@@ -18,15 +18,16 @@ var types = require('../types');
  */
 class ElementArray extends FwElement {
     /**
-     * @constructor
+     * Initialize the UI element
+     * @method initialize
+     * @private
      * @param {Object} config - the configuration object parameter
      * @param {Object} [config.i18n] - the dictionary which contains the translations
      * @param {boolean} [config.visible] - set the visibility of the UI Element
      * @param {Node} node - the base node of the UI Element
      */
-    constructor(config) {
+    initialize() {
         this.properties = {};
-        super(config);
     }
     /**
      * Synchronize the element with its ArraySource

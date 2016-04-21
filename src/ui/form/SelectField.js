@@ -48,6 +48,8 @@ class FwSelectField extends EditableFormElement {
      * @private
      */  
     initialize() {
+        super.initialize();
+
         this.updated = false;
         this.focused = false;
         this.currentLabel = '';

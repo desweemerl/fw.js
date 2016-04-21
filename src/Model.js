@@ -81,7 +81,7 @@ class Model {
     constructor(config) {
         this.config = config || {};
         // Initialize ajax requests store
-        this.ajaxPromises = [];
+        this.ajaxInstances = [];
         // Initialize network objects store
         this.netProviderInstances = [];
         // Call the initialize function
@@ -102,8 +102,8 @@ class Model {
         var n, l;
 
         // Abort all ajax requests
-        for (n = 0, l = this.ajaxPromises.length; n < l; n++) {
-            this.ajaxPromises[n].abort();
+        for (n = 0, l = this.ajaxInstances.length; n < l; n++) {
+            this.ajaxInstances[n].abort();
         }
 
         // Abort and remove all network requests
@@ -126,7 +126,7 @@ class Model {
             }
         }
         // Check if the ajax requests store contains object
-        return this.ajaxPromises.length > 0;
+        return this.ajaxInstances.length > 0;
     }
     /**
      * Create an NetProvider instance
@@ -212,31 +212,27 @@ class Model {
         // Call Application.netBeforeSend before sending request
         Application.netBeforeSend();
         // Register the ajax in the ajax requests store
-        this.ajaxPromises.push(ajax = new FwAjax(options));
+        this.ajaxInstances.push(ajax = new FwAjax(options));
         ajax.then(
             // Remove ajax request from ajax requests store and return data
             function (response) {
-                var index = self.ajaxPromises.indexOf(ajax);
+                var index = self.ajaxInstances.indexOf(ajax);
 
                 if (index !== -1) {
-                    self.ajaxPromises.splice(index, 1);
+                    self.ajaxInstances.splice(index, 1);
                 }
                 // Call Application.netDone with data and model state
                 Application.netDone(response);
-
-                return response;
             },
             // Remove ajax request from ajax requests store and throw error
             function (error) {
-                var index = self.ajaxPromises.indexOf(ajax);
+                var index = self.ajaxInstances.indexOf(ajax);
 
                 if (index !== -1) {
-                    self.ajaxPromises.splice(index, 1);
+                    self.ajaxInstances.splice(index, 1);
                 }
                 // Call Application.netFail with error and model state
                 Application.netFail(error);
-
-                throw error;
             }
         );
 

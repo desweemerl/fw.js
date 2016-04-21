@@ -30,21 +30,21 @@ I18n.addDictionary('i18nForm', i18nForm);
  */
 class EditableFormElement extends FocusableFormElement {
     /**
-     * @constructor
+     * Initialize the UI element
+     * @method initialize
+     * @private
      */
-    constructor(config) {
+    initialize() {
         // Add error checking to the EditableFormElement
         this.dataSourceRefreshing = false;
         this.invalid = false;
         this.errorMessage = null;
         // Add dictionary to the EditableFormElement
-        this.elementI18n = 'i18nForm';
-        // Call FocusableFormElement initialization
-        super(config);
+        this.elementI18n = 'i18nForm';   
         // Add onChange callback
-        this.onChange = this.config.onChange || null;
+        this.onChange = this.config.onChange || this.onChange || null;
         // Add a check function called during validation
-        this.check = this.config.check || this.check || null;
+        this.check = this.config.check || this.check || null;       
     }
     /**
      * Refresh the DataSource if defined
