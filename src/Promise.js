@@ -11,45 +11,62 @@ var types = require('./types');
 
 // Process handlers
 function callHandlers(self) {
-    var n, l;
+    var errorFound = false;
+    var error, handler, func, output;
 
-    for (n = 0, l = self.handlers.length; n < l; n++) {
-        var handler = self.handlers[n];
-        var func;
+    while (handler = self.handlers[0]) {
 
         if (self.status === 'resolved') {
             func = handler.onFulfilled;
-        } else if (self.status === 'rejected') {
+        } else {
             func = handler.onRejected;
         }
 
-        if (types.isFunction(func)) {
-            try {
-                self.value = func(self.value);
-                self.status = 'resolved';
-            } catch (ex) {
-                self.value = ex;
-                self.status = 'rejected';
-            }
-        }
-
-        if (self.value instanceof FwPromise) {
-            if (types.isFunction(handler.nextResolve)) {
-                self.value.then(handler.nextResolve);
-            }
-
-            if (types.isFunction(handler.nextReject)) {
-                self.value.catch(handler.nextReject);
-            }
-
-            break;
-        } else {
-            if (self.status === 'resolved' && types.isFunction(handler.nextResolve)) {
-                handler.nextResolve(self.value);
-            } else if (self.status === 'rejected' && types.isFunction(handler.nextReject)) {
+        if (!types.isFunction(func)) {
+            if (self.status === 'rejected') {
                 handler.nextReject(self.value);
+                self.handlers.shift();
+                continue;
+            }
+
+            output = self.value;
+        } else {
+            try {
+                output = func(self.value);
+            } catch(ex) {
+                console.log('Promise: error from callHandlers');
+                console.log(ex);
+                errorFound = true;
+                output = ex;
             }
         }
+
+        if (output instanceof FwPromise) {
+           (function(resolve, reject) {
+                output.then(function(data) {
+                    resolve(data);
+                }, function(error) {
+                    reject(error);
+                });
+            })(handler.nextResolve, handler.nextReject);
+        } else {
+            if (errorFound) {
+                console.log('nextReject with error:');
+                console.log(error);
+                handler.nextReject(error);
+            } else {
+                if (self.status === 'resolved') {
+                    console.log('nextResolve with value:');
+                    console.log(output);
+                    handler.nextResolve(output);;
+                } else {
+                    console.log('nextResolve');
+                    handler.nextResolve();
+                }
+            }
+        }
+
+        self.handlers.shift();
     }
 }
 
@@ -69,7 +86,7 @@ class FwPromise {
         if (!types.isFunction(resolver)) {
             throw new ModuleError({
                 moduleName: 'fw/Promise',
-                message:    'Promise resolver is not defined',
+                message:    'Promise resolver is not a function',
                 origin:     'constructor'
             });
         }
@@ -101,10 +118,9 @@ class FwPromise {
         try {
             resolver(callFulfillmentdHandler, callRejectionHandler);
         } catch (ex) {
+            console.log(ex);
             callRejectionHandler(ex);
         }
-
-        return this;
     }
     /**
      * Appends fulfillment and rejection handlers to the promise, and returns a new promise resolving to the return value of the called handler
@@ -117,24 +133,16 @@ class FwPromise {
         var self = this;
 
         return new FwPromise(function(resolve, reject) {
-            var handler = {
+            self.handlers.push({
                 nextResolve: resolve,
-                nextReject: reject
-            };
+                nextReject:  reject,
+                onFulfilled: onFulfilled,
+                onRejected:  onRejected
+            });
 
-            if (types.isFunction(onFulfilled)) {
-                handler.onFulfilled = function() {
-                    return onFulfilled(self.value);
-                };
+            if (self.status !== 'pending') {
+                callHandlers(self);
             }
-
-            if (types.isFunction(onRejected)) {
-                handler.onRejected = function() {
-                    return onRejected(self.value);
-                };
-            }
-
-            self.handlers.push(handler);
         });
     }
     /**
@@ -232,7 +240,7 @@ class FwPromise {
             return function(resolve) {
                 resolve(value);
             };
-        }       
+        }
 
         return new FwPromise(function(resolve, reject) {
             var n, l, value, promise;
@@ -243,7 +251,7 @@ class FwPromise {
                 promise.catch(reject).then(resolve);
             }
         });
-    }   
+    }
     /**
      * Returns a promise that is resolved with the given value
      * @method resolve
@@ -253,7 +261,7 @@ class FwPromise {
      */
     static resolve(data) {
         return new FwPromise(function(resolve, reject) { resolve(data); });
-    }   
+    }
     /**
      * Returns a promise that is rejected with the given error
      * @method reject
@@ -263,7 +271,7 @@ class FwPromise {
      */
     static reject(error) {
         return new FwPromise(function(resolve, reject) { reject(error); });
-    }   
+    }
 }
 
 module.exports = FwPromise;
