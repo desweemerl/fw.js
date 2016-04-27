@@ -132,7 +132,7 @@ class FwAjax {
                         });
                     }
                     // If not, the Ajax Promise is rejected
-                    ²else {
+                    else {
                         reject(new AjaxError({
                             i18n:    options.i18n,
                             status:  status,
