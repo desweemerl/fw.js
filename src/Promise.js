@@ -52,8 +52,8 @@ function callHandlers(self) {
         } else {
             if (errorFound) {
                 console.log('nextReject with error:');
-                console.log(error);
-                handler.nextReject(error);
+                console.log(output);
+                handler.nextReject(output);
             } else {
                 if (self.status === 'resolved') {
                     console.log('nextResolve with value:');
