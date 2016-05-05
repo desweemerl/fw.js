@@ -2,14 +2,18 @@
 
 'use strict';
 
+var babelify = require('babelify');
+var bl = require('bl');
 var browserify = require('browserify');
 var colors = require('colors');
 var fs = require('fs');
+var jshint = require('jshint');
 var path = require('path');
 var program = require('commander');
 var packageJson = require('../package.json');
-var sweet = require('sweet.js');
+var strftime = require('strftime');
 var through = require('through');
+var uglify = require('uglify-js');
 var watchify = require('watchify');
 var wrench = require('wrench');
 
@@ -17,27 +21,36 @@ const CONFIG_FILE = 'fw.config.js';
 const SRC_PATH = path.join(process.cwd(), 'src');
 
 var config = {};
-var sjs_modules = [];
 var bs;
+
+function list(val) {
+    return val.split(' ');
+}
 
 program
     .version(packageJson.version)
     .usage('[options] <entry> <target>')
     .option('-c, --config [configPath]', 'Path to config file')
-    .option('-d, --debug', 'Add a source map at the end of the bundle')
+    .option('-d, --debug', 'Debug mode (add source map)')
     .option('-j, --jshint', 'Check syntax with jshint')
     .option('-p, --paths', 'Directories that browserify searches when looking for modules')
     .option('-u, --uglify', 'Uglify the output')
-    .option('-w, --watchify', 'Watch source change')
+    .option('-w, --watch', 'Watch source change')
+    .option('--es6', 'Generate Javascript syntax compatible with ES6')
+    .option('--babel-plugins <babelPlugins>', 'Babel plugins', list)
+    .option('--babel-presets <babelPresets>', 'Babel presets', list)
     .parse(process.argv);
 
 var options = {
-    configPath: program.config,
-    debug:      program.debug,
-    jshint:     program.jshint,
-    paths:      program.paths ? program.paths.split(',') : null,
-    uglify:     program.uglify,
-    watchify:   program.watchify
+    configPath:   program.config,
+    debug:        program.debug,
+    jshint:       program.jshint,
+    paths:        program.paths ? program.paths.split(',') : null,
+    uglify:       program.uglify,
+    watch:        program.watch,
+    babelPlugins: program.babelPlugins,
+    babelPresets: program.babelPresets,
+    es6:          program.es6,
 };
 
 function isFile(filePath) {
@@ -49,11 +62,19 @@ function isDirectory(dirPath) {
 }
 
 function warn(tag, message) {
-    console.log(tag ? [colors.red('[' + tag + ']'), colors.white(message)].join(' ') : colors.white(message));
+    if (arguments.length == 1) {
+        console.warn(arguments[0]);
+    } else if (arguments.length > 1) {
+        console.warn([strftime('%F %T.%L', new Date()), colors.red('[' + arguments[0] + ']'), colors.white(arguments[1])].join(' '));
+    }
 }
 
 function info(tag, message) {
-    console.log(tag ? [colors.cyan('[' + tag + ']'), colors.white(message)].join(' ') : colors.white(message));
+    if (arguments.length == 1) {
+        console.info(arguments[0]);
+    } else if (arguments.length > 1) {
+        console.info([strftime('%F %T.%L', new Date()), colors.cyan('[' + arguments[0] + ']'), colors.white(arguments[1])].join(' '));
+    }
 }
 
 function loadConfig(configPath) {
@@ -79,34 +100,11 @@ function installLib() {
     }
 }
 
-function loadSjsMacros() {
-    var macrosPath = path.join(__dirname, '../macros');
-    var macros, macro, n, l;
-
-    try {
-        macros = fs.readdirSync(macrosPath);
-    } catch(ex) {
-        warn('SWEETJS', 'Unable to load Sweet.js macros - ' + ex.name + ' - ' + ex.message);
-        process.exit(1);
-    }
-
-    for(n = 0, l = macros.length; n < l; n++) {
-        try {
-            macro = macros[n];
-            sjs_modules.push(sweet.loadNodeModule(process.cwd(), path.join(macrosPath, macro)));
-            info('SWEETJS', 'Sweet.js macro "' + macro + '" loaded');
-        } catch(ex) {
-            warn('SWEETJS', 'Error loading Sweet.js macro "' + macro + '" - ' + ex.name + ' - ' + ex.message.trim());
-            process.exit(1);
-        }
-    }
-}
-
 function run(entry, target, options) {
     var configPath = options.configPath || path.join(process.cwd(), CONFIG_FILE);
     var configFound = loadConfig(configPath);
-    var symlink;
-    var key, value, module, n, l;
+    var babelPresets, babelPlugins;
+    var index, key, value, n, l;
 
     info('CONFIG', configFound ? 'Config file "' + configPath + '" loaded' : 'No configuration file found');
 
@@ -115,10 +113,37 @@ function run(entry, target, options) {
 
         if (value) {
             config[key] = value instanceof Array ?
-                 (config[key] instanceof Array ? config[key].concat(value) : value) :
-                 value;    
+                (config[key] instanceof Array ? config[key].concat(value) : value) :
+                value;    
         }
     }
+
+    babelPresets = config.babelPresets || [],
+    babelPlugins = config.babelPlugins || [],
+    index = babelPresets.indexOf('es2015');
+
+    if (config.es6) {
+        if (index !== -1) {
+            config.es6.splice(index, 1);
+        }
+
+        if (config.uglify) {
+            warn('CONFIG', 'Uglify option is incompatible with ES6 option, discarded !');
+            config.uglify = false;
+        }
+    } else {
+        if (index === -1) {
+            babelPresets.push('es2015');
+        }
+    }
+
+    if (babelPlugins.indexOf('transform-es2015-modules-commonjs') === -1) {
+        babelPlugins.push('transform-es2015-modules-commonjs');
+    }
+
+    if (babelPlugins.indexOf('transform-class-properties') === -1) {
+        babelPlugins.push('transform-class-properties');
+    }   
 
     if (!isFile(config.entry)) {
         warn('CONFIG', 'No entry defined');
@@ -134,7 +159,6 @@ function run(entry, target, options) {
     config.paths.push(path.dirname(config.entry));
 
     installLib();
-    loadSjsMacros();
     
     bs = browserify({
         paths:        config.paths,
@@ -143,51 +167,98 @@ function run(entry, target, options) {
         packageCache: {}
     }).add(config.entry);
 
-    if (config.watchify) {
+    if (config.watch) {
         bs.plugin(watchify)
-        .on('update', function() {
-            info('WATCHIFY', 'Change occurs - rebuilding the target bundle...');
-            bundle();
+          .on('update', function() {
+              info('WATCHIFY', 'Change occurs - rebuilding the target bundle...');
+              bundle();
+          });
+    }
+
+    if (config.jshint) {
+        bs.transform(function(file) {
+            var data = '';
+
+            return through(
+                function(buf) {
+                    data += buf;    
+                },
+                function() {
+                    var error, errors, n, l;
+
+                    jshint.JSHINT(data);
+                    errors = jshint.JSHINT.errors;
+
+                    if (errors.length) { 
+                        for (n = 0, l = errors.length; n < l; n++) {
+                            error = errors[n];
+
+                            if (error) {
+                                warn('JSHINT', 'LINE: ' + error.line + ' REASON: ' + error.reason);
+                            }
+                        }
+                    }
+
+                    this.queue(data);
+                    this.queue(null);
+                }
+            );
         });
     }
 
-    bs.transform(sweetify);
-    bundle();   
+    bs.transform(babelify.configure({
+        sourceMaps:    false, // This prevents breakpoint line issue on chromium
+        presets:       babelPresets,
+        plugins:       babelPlugins,
+    }));
+
+    bundle();
+
+    bs.on('transform', function(tr) {
+        if (tr instanceof babelify) {
+            tr.once('babelify', function(result, fileName) {
+                info('BABELIFY', 'File "' + fileName + '" compiled');
+            });
+
+            tr.once('error', function(err) {
+                warn('BABELIFY', err.message); 
+                warn(err.codeFrame);
+            });
+        }
+    });
 }
 
 function bundle() {
+    var fileStream = fs.createWriteStream(config.target);
+
+    if (config.uglify) {
+        fileStream.on('finish', function(chunk) {
+            var ext = path.extname(config.target);
+            var fileName = ext ? 
+                config.target.substring(0, config.target.length - ext.length) + '.min' + ext :
+                config.target + '.min';
+            var result;
+
+            try {
+                result = uglify.minify(config.target, {mangle: true});
+            } catch(error) {
+                warn('UGLIFY', 'FILE: ' + error.fileName + ' LINE: ' + error.line + ' COL: ' + error.col + ' REASON: ' + error.message);
+                return;
+            }
+
+            try {
+                fs.writeFileSync(fileName, result.code);
+                info('UGLIFY', 'Minified file "' + fileName + '" created');
+            } catch(error) {
+                warn('UGLIFY', 'Unable to write file "' + fileName + '"');
+            }
+        });
+    }
+
     info('BROWSERIFY', 'Building the target bundle "' + config.target + '"');
-    bs.bundle()  
-      .pipe(fs.createWriteStream(config.target));
+
+    bs.bundle()
+      .pipe(fileStream);
 }
-
-function sweetify(file) {
-    var data = '';
-
-    return through(write, end);
-
-    function write(buf) { 
-        data += buf; 
-    }
-
-    function end() {
-        var compiled;
-
-        try {
-            compiled = sweet.compile(data, {
-                modules:       sjs_modules, 
-                sourceMap:     false,
-                readableNames: true
-            });
-            info('SWEETIFY', 'File "' + file + '" compiled');
-        } catch(ex) {
-            warn('SWEETIFY', 'File "' + file + '" not compiled - ' + ex.name + ' - ' + ex.message.trim()); 
-        }
-
-        this.queue(compiled ? compiled.code : ''); // jshint ignore:line
-        this.queue(null);                          // jshint ignore:line
-    }
-}
-
 
 run(program.args[0], program.args[1], options);
