@@ -618,7 +618,6 @@ class FwSelectField extends EditableFormElement {
         this.updateValue();
         this.focused = false;
         this.removeClass('focused');
-        this.validate();
     }
     /**
      * Set the value from label for the SelectField

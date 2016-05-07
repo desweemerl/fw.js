@@ -133,8 +133,6 @@ class FwTimestampField extends EditableFormElement {
                     }
                 }
             }
-
-            this.validate();
         }
     }
     /**

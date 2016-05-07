@@ -58,7 +58,6 @@ class FwSearchField extends EditableFormElement {
         this.currentLabel = '';
         this.originalValue = null;
         this.originalItem = {};
-        this.validationEnabled = true;
         this.listVisible = false;
         this.nodeOffset = { top: 0, left: 0 };
 
@@ -239,7 +238,6 @@ class FwSearchField extends EditableFormElement {
                         this.addWindowModalInstance = new this.addWindowModal({
                             onBeforeHide: function() {
                                 self.focused = true;
-                                self.validationEnabled = true;
                             },
                             onAdd: function(item) {
                                 self.setOptions(item.getObject());
@@ -249,7 +247,6 @@ class FwSearchField extends EditableFormElement {
                         });
                     }
 
-                    this.validationEnabled = false;
                     this.addWindowModalInstance.show();
                 }
             }
@@ -634,10 +631,6 @@ class FwSearchField extends EditableFormElement {
         this.updateValue();
         this.focused = false;
         this.removeClass('focused');
-
-        if (this.validationEnabled) {
-            this.validate();
-        }
     }
     /**
      * Set the value from label of the SearchField

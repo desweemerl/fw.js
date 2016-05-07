@@ -111,7 +111,6 @@ class FwCurrencyField extends EditableFormElement {
     onBlur() {
         this.focused = false;
         this.removeClass('focused');
-        this.validate();
     }
     /**
      * change event handler
