@@ -28,7 +28,7 @@ class FwMenu extends FwElement {
      * Define element className
      * @property className
      */
-    static className = 'fw-menu'; // jshint ignore:line   
+    static className = 'fw-menu'; // jshint ignore:line
     /**
      * Define menu HORIZONTAL const
      */
@@ -41,10 +41,9 @@ class FwMenu extends FwElement {
      * Initialize the UI element
      * @method initialize
      * @private
-     */  
+     */
     initialize() {
         this.menu = null;
-        this.onClick = this.config.onClick || null;
     }
     /**
      * Create the vertical menu nodes
@@ -75,10 +74,10 @@ class FwMenu extends FwElement {
     onClick(e) {
         if (e.target.nodeName === 'LI') {
             if (e.target.index === undefined) return;
-            this.selectMenu(e.target.index, this.onClick);
+            this.selectMenu(e.target.index, this.config.onClick);
         } else if (e.target.nodeName === 'SPAN') {
             if (e.target.parentNode.index === undefined) return;
-            this.selectMenu(e.target.parentNode.index, this.onClick);
+            this.selectMenu(e.target.parentNode.index, this.config.onClick);
         }
     }
     /**
@@ -129,42 +128,17 @@ class FwMenu extends FwElement {
             default:
                 if (!fw.isArray(menu)) return;
 
+                this.menu = { items: [] };
+
                 for (n = 0, l = menu.length; n < l; n++) {
+                    item = menu[n];
                     liNode = document.createElement('li');
                     liNode.classList.add('fw-menu-item');
-                    liNode.appendChild(document.createTextNode(this.createMessage(menu[n].label)));
+                    liNode.appendChild(document.createTextNode(this.createMessage(item.label)));
                     liNode.index = n;
                     this.ulNode.appendChild(liNode);
+                    this.menu.items.push(item);
                 }
-
-                this.menu = menu;
-        }
-
-        if (fw.isString(this.menu.title)) {
-            spanNode = document.createElement('span');
-            spanNode.classList.add('fw-menu-label');
-            spanNode.appendChild(document.createTextNode(this.createMessage(menu.title)));
-            liNode = document.createElement('li');
-            liNode.classList.add('fw-menu-title');
-            liNode.appendChild(spanNode);
-            this.ulNode.appendChild(liNode);
-        }
-
-        if (fw.isArray(this.menu.items)) {
-            for (n = 0, l = menu.items.length; n < l; n++) {
-                item = menu.items[n];
-
-                if (fw.isString(item.label)) {
-                    spanNode = document.createElement('span');
-                    spanNode.classList.add('fw-menu-label');
-                    spanNode.appendChild(document.createTextNode(this.createMessage(item.label)));
-                    liNode = document.createElement('li');
-                    liNode.classList.add('fw-menu-item');
-                    liNode.appendChild(spanNode);
-                    liNode.index = index++;
-                    this.ulNode.appendChild(liNode);
-                }
-            }
         }
     }
     /**
