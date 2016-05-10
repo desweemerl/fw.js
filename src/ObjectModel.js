@@ -23,7 +23,7 @@ var ValidatorFactory = require('./validator/ValidatorFactory');
 var id = { name: 'ObjectModelClass' };
 
 // Types registered into the ObjectModel
-var allTypes = [FwCurrency, FwNumber, FwInteger, FwDate, FwTime, FwTimestamp, 'ArrayModel', 'string', 'number', 'boolean', 'array', 'object'];
+var allTypes = [FwCurrency, FwNumber, FwInteger, FwDate, FwTime, FwTimestamp, 'ArrayModel', 'string', 'number', 'boolean', 'array', 'object', '*'];
 /**
  * @typedef fieldOption
  * @property {string|CustomeType} [type] - field type ("*", "number", "string", "boolean", "array", "object", FwNumber, FwCurrency, ...)
@@ -91,7 +91,7 @@ function ObjectModel(options, objectModelClass) {
                     modelName: 'fw/ObjectModel',
                     message:   type + ' observer "' + observer.constructor.name + ' for prop' + prop + 'is already registered',
                     origin:    '"addObserver" function'
-                });           
+                });
             }
             target.push(observer);
         } else {
@@ -127,8 +127,8 @@ function ObjectModel(options, objectModelClass) {
             }
 
             return;
-        }  
-        
+        }
+
         utils.setValueToObject(object, key, svValue);
     }
     // Add validator to object
@@ -142,7 +142,7 @@ function ObjectModel(options, objectModelClass) {
         if (target === undefined) {
             target = [];
             utils.setValueToObject(object, prop, target);
-        }       
+        }
 
         for (n = 0, l = validators.length; n < l; n++) {
             validator = validators[n];
@@ -150,9 +150,9 @@ function ObjectModel(options, objectModelClass) {
 
             if (!(validator instanceof Validator)) {
                 throw new ModelError({
-                    modelName: 'fw/ObjectModel', 
-                    message:   types.isObject(validator) ? 
-                                   validator.constructor.name + ' for "' + prop + '" is not a validator' : 
+                    modelName: 'fw/ObjectModel',
+                    message:   types.isObject(validator) ?
+                                   validator.constructor.name + ' for "' + prop + '" is not a validator' :
                                    'wrong validator for "' + prop + '"',
                     origin:    '"addValidators" function'
                 });
@@ -175,7 +175,7 @@ function ObjectModel(options, objectModelClass) {
     // Configure the class
     function lookupProperty(base, obj) {
         var isRoot = base.length === 0;
-        var definedValue, value; 
+        var definedValue, value;
         var prop, propFound;
 
         for (prop in obj) {
@@ -197,23 +197,23 @@ function ObjectModel(options, objectModelClass) {
                     propFound = true;
                 } else if (!isRoot && prop === 'observer') {
                     if (types.isFunction(value)) {
-                        addObserver(config.observers.props, value, base); 
+                        addObserver(config.observers.props, value, base);
                         propFound = true;
                     } else if (types.isObject(value)) {
                         if (types.isFunction(value.before)) {
-                            addObserver(config.observers.props, value.before, base, 'before'); 
+                            addObserver(config.observers.props, value.before, base, 'before');
                             propFound = true;
                         }
 
                         if (types.isFunction(value.after)) {
-                            addObserver(config.observers.props, value.after, base); 
+                            addObserver(config.observers.props, value.after, base);
                             propFound = true;
                         }
 
                         if (types.isFunction(value.validation)) {
-                            addObserver(config.observers.props, value.validation, base, 'validation'); 
+                            addObserver(config.observers.props, value.validation, base, 'validation');
                             propFound = true;
-                        }                       
+                        }
                     }
                 } else if (!isRoot && prop === 'validator') {
                     if (value instanceof Array) {
@@ -236,11 +236,11 @@ function ObjectModel(options, objectModelClass) {
 
         var isProcessed = false;
         var output, key, error;
-        var n, l; 
+        var n, l;
 
         for (n = 0, l = validators.length; n < l; n++) {
-           isProcessed = true; 
-           output = validators[n].validate(value, self); 
+           isProcessed = true;
+           output = validators[n].validate(value, self);
 
            for (key in output) {
                 error = output[key];
@@ -251,10 +251,10 @@ function ObjectModel(options, objectModelClass) {
                 } else {
                     if (self.invalidFields[prop]) {
                         delete self.invalidFields[prop][key];
- 
+
                         if (types.isEmptyObject(self.invalidFields[prop])) {
                             delete self.invalidFields[prop];
-                        }                             
+                        }
                     }
                 }
            }
@@ -279,7 +279,7 @@ function ObjectModel(options, objectModelClass) {
                         value[key] = returnValue;
                     }
                 }
-            } 
+            }
         } else if (types.isString(lookup)) {
             if (value === undefined || value === null) {
                 if (options.defaultValue === undefined || options.defaultValue === null)  {
@@ -293,7 +293,7 @@ function ObjectModel(options, objectModelClass) {
                         return value;
                     }
                 } else {
-                    value = options.defaultValue;  
+                    value = options.defaultValue;
                     defaultValue = true;
                 }
             }
@@ -455,7 +455,7 @@ function ObjectModel(options, objectModelClass) {
          */
         static get id () {
             return id;
-        }       
+        }
         /**
          * define parent
          * @property parent
@@ -492,7 +492,7 @@ function ObjectModel(options, objectModelClass) {
             var options = utils.getValueFromObject(config.options, prop);
 
             return (options === undefined) ? undefined : options[key];
-        }       
+        }
         /**
          * Get a type from a specified property
          * @method fw/ObjectModel~ObjectModelClass.getType
@@ -546,7 +546,7 @@ function ObjectModel(options, objectModelClass) {
             }
 
             return this;
-        }       
+        }
         /**
          * Remove observer from the ObjectModelClass
          * @method fw/ObjectModel~ObjectModelClass.removeObserver
@@ -611,7 +611,7 @@ function ObjectModel(options, objectModelClass) {
             }
 
             return this;
-        } 
+        }
         /**
          * Store a new object
          * @method setObject

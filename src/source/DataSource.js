@@ -180,18 +180,18 @@ class DataSource extends Source {
         // Adapt model with the element bound
         function addElement(el) {
             var elClass = el.constructor;
-            var propName = 'fields' + el.property; 
+            var propName = 'fields' + el.property;
             var elConf = {};
             var propConf = utils.getValueFromObject(config, propName) || {};
             var propValidators = propConf.validators || [];
-            var modelType;
+            var modelType = self.model.getType(el.property);
             var validators, validator;
             var propertyArray, prop;
             var value, i, j, n, l;
 
             // If type is defined for the element, check if it matches the property type in the model
             if (!types.isEmptyString(elClass.type) || types.isFunction(elClass.type)) {
-                if (propConf.type !== undefined && propConf.type !== elClass.type) {
+                if (propConf.type !== undefined && propConf.type !== '*' && propConf.type !== elClass.type) {
                     throw new SourceError({
                         sourceName: 'fw/source/DataSource',
                         message:    'type for property "' + el.property + '"has been already defined',
@@ -200,21 +200,21 @@ class DataSource extends Source {
                     });
                 }
 
-                modelType = self.model.getType(el.property);
-
-                if (modelType !== undefined) {
+                if (modelType !== undefined && modelType.type !== '*') {
                     if (modelType !== elClass.type) {
                         throw new SourceError({
                             sourceName: 'fw/source/DataSource',
                             message:    'type for property "' + el.property + '"has been already defined',
                             origin:     '"bind" method',
-                            element:    el                   
+                            element:    el
                         });
                     }
                 } else {
                     elConf.type = elClass.type;
                 }
-            } 
+            } else if (modelType === undefined) {
+                elConf.type = '*';
+            }
 
             // Set validators if defined in the element
             validators = ValidatorFactory.getValidators(el);
@@ -242,7 +242,7 @@ class DataSource extends Source {
             }
 
             // Check if changes must be done on the model
-            if (!types.isEmptyObject(elConf)) {
+            if (!fw.isEmptyObject(elConf)) {
                 utils.setValueToObject(config, 'fields.' + el.property, elConf);
                 configModified = true;
             }
@@ -297,19 +297,19 @@ class DataSource extends Source {
         // Process element
         function processElement(element, property) {
             if (!(element instanceof FwElement)) return;
-            
+
             if ((element.dataSource !== self) && (element.dataSource instanceof DataSource)) {
-                element.dataSource.unbind(element); 
+                element.dataSource.unbind(element);
             }
 
-            if (types.isString(property)) { 
+            if (types.isString(property)) {
                 element.property = property;
             }
 
-            if (self.elements.indexOf(element) !== -1) { 
-                self.unbind(element); 
+            if (self.elements.indexOf(element) !== -1) {
+                self.unbind(element);
             }
-            
+
             if (!types.isEmptyString(element.property)) {
                 addElement(element);
             }
@@ -328,8 +328,6 @@ class DataSource extends Source {
         }
         // Extend the model if changes must be applied
         if (configModified) {
-            console.log('config modified:');
-            console.log(this.model.config.observers);
             this.model = this.model.extend(config);
             this.source = new this.model(this.source.getObject());
         }
