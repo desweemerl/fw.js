@@ -24,13 +24,19 @@ function Translator(config) {
 /**
  * Create a translated message
  * @method createMessage
- * @param {string} message - message to be translated
+ * @param {string|fw/i18n/Message} message - message to be translated
  * @param {Object} args - message arguments
  * @return {fw/i18n/Message}
  */
 Translator.prototype = {
     createMessage: function(message, args) {
         var i18n;
+
+        if (message instanceof Message) {
+            if (args) { message.setArgs(args); }
+
+            return message;
+        }
 
         if (this.constructor.i18n) {
             i18n = this.i18n ? [this.constructor.i18n, this.i18n] : this.constructor.i18n;
