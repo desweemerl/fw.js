@@ -118,7 +118,7 @@ class FwElement {
             classNames.push(this.config.className);
         }
 
-        if (l = classNames.length) { 
+        if (l = classNames.length) {
             for (n = 0; n < l; n++) {
                 this.node.classList.add(classNames[n]);
             }
@@ -133,7 +133,7 @@ class FwElement {
                 origin:  'element initialization',
                 message: 'this.node has not been created after buildUI'
             });
-        } 
+        }
         this.bindUI();
         this.isBound = true;
         // Hide element if wanted
@@ -145,7 +145,7 @@ class FwElement {
      * Get element's name
      * @method getName
      * @return {string|null}
-     */ 
+     */
     getName() {
         return this.node.getAttribute('name');
     }
@@ -208,15 +208,11 @@ class FwElement {
      * @method triggerAttach
      */
     triggerAttach() {
-        var self = this;
-
         this.isAttached = true;
         this.attachEvents();
 
         if (types.isFunction(this.onAttach)) {
-            window.setTimeout(function() {
-                self.onAttach();
-            }, 0);
+            this.onAttach();
         }
     }
     /**
@@ -224,15 +220,11 @@ class FwElement {
      * @method triggerDetach
      */
     triggerDetach() {
-        var self = this;
-
         this.isAttached = false;
         this.detachEvents();
 
         if (types.isFunction(this.onDetach)) {
-            window.setTimeout(function() {
-                self.onDetach();
-            }, 0);
+            this.onDetach();
         }
     }
     /**
@@ -283,7 +275,7 @@ class FwElement {
                 handler.bound = true;
                 eventEmitter.on(event, handler.listener);
             }
-        }       
+        }
     }
     /**
      * Destroy UI Element
@@ -295,7 +287,7 @@ class FwElement {
      * Add a listener for an attribute change
      * @method onAttributeChange
      * @param {string} attribute - attribute processed
-     * @param {function} listener - listener attached 
+     * @param {function} listener - listener attached
      */
     onAttributeChange(attribute, listener) {
         var value;
@@ -321,7 +313,7 @@ class FwElement {
             value = this.node.getAttribute(attribute);
 
             if (value) {
-                listener.call(this, value);    
+                listener.call(this, value);
             }
         }
     }
@@ -342,7 +334,7 @@ class FwElement {
         if (this.attributeHandlers[attribute]) {
             delete this.attributeHandlers[attribute];
         }
-    }   
+    }
     /**
      * Set attribute value
      * @method setAttribute
@@ -373,7 +365,7 @@ class FwElement {
      */
     getAttribute(attribute) {
         return this.node.getAttribute(attribute);
-    } 
+    }
     /**
      * Remove attribute
      * @method removeAttribute
@@ -386,19 +378,19 @@ class FwElement {
                 message:    'attribute was not correctly defined',
                 origin:     '"removeAttribute" method'
             });
-        }     
+        }
 
         this.node.removeAttribute(attribute);
         if (this.attributeHandlers[attribute]) {
             this.attributeHandlers[attribute].call(this, null);
-        }       
-    }   
+        }
+    }
     /**
      * Add event(s) to the event emitter
      * @method on
      * @param {string, string[]} event - event(s) to be registered
      * @param {function} listener - listener attached to the event
-     */   
+     */
     onEvent(event, listener) {
         var self = this;
         var events = types.isArray(event) ? event : [event];
@@ -409,7 +401,7 @@ class FwElement {
             listener.call(self, listenerEvent);
         }
 
-        for (n = 0, l = events.length; n < l; n++) { 
+        for (n = 0, l = events.length; n < l; n++) {
             e = events[n];
             checkEventListener(this, e, listener, 'onEvent');
 
@@ -428,7 +420,7 @@ class FwElement {
     /**
      * Remove event(s) from the event emitter
      * @method off
-     * @param {string} event - event(s) to be removed 
+     * @param {string} event - event(s) to be removed
      */
     offEvent(event) {
         var events = types.isArray(event) ? event : [event];
@@ -443,7 +435,7 @@ class FwElement {
                 delete(this.eventEmitterHandlers[e]);
 
                 if (handler.bound) {
-                    eventEmitter.off(e, handler.listener); 
+                    eventEmitter.off(e, handler.listener);
                 }
             }
         }
@@ -452,7 +444,7 @@ class FwElement {
      * Emit an event
      * @method emitEvent
      * @param {string} event - event name
-     * @param {*} [data] - data associated with the event 
+     * @param {*} [data] - data associated with the event
      */
     emitEvent(event, data) {
         eventEmitter.emit(event, data);
@@ -461,7 +453,7 @@ class FwElement {
      * Register window event(s)
      * @method onWindowEvent
      * @param {string} event - event(s) ("click", "focus", "change", ...)
-     * @param {function} listener - function(event) listener 
+     * @param {function} listener - function(event) listener
      * @param {boolean} [useCapture=true] - set the listener on capturing phase
      */
     onWindowEvent(event, listener, useCapture) {
@@ -474,7 +466,7 @@ class FwElement {
             listener.call(self, listenerEvent);
         }
 
-        for (n = 0, l = events.length; n < l; n++) { 
+        for (n = 0, l = events.length; n < l; n++) {
             e = events[n];
             checkEventListener(this, e, listener, 'onWindowEvent');
 
@@ -513,7 +505,7 @@ class FwElement {
                 }
             }
         }
-    } 
+    }
     /**
      * Register UI Element event(s)
      * @method on
