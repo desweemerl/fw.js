@@ -21,7 +21,7 @@ var types = require('../types');
  * @param {Object} [error.fields] - fields errors
  */
 class AjaxError extends Error {
-    /** 
+    /**
      * @constructor
      */
     constructor(error) {
@@ -58,9 +58,12 @@ class AjaxError extends Error {
                     break;
                 case AjaxError.BAD_GATEWAY:
                     this.message = new Message({ i18n: i18n, message: 'badGateway' });
-                    break;    
+                    break;
                 case AjaxError.SERVICE_UNAVAILABLE:
                     this.message = new Message({ i18n: i18n, message: 'serviceUnavailable' });
+                    break;
+                case AjaxError.NOT_FOUND:
+                    this.message = new Message({ i18n :i18n, message: 'notFound' });
                     break;
             }
         }
