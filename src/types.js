@@ -22,7 +22,16 @@ var types = {
      * @return {boolean}
      */
     isObject: function(variable) {
-        return variable !== null && typeof variable === 'object'; 
+        return variable !== null && typeof variable === 'object';
+    },
+    /**
+     * Check if variable is a pure object
+     * @function isPureObject
+     * @param {*} variable - variable processed
+     * @return {boolean}
+     */
+    isPureObject: function(variable) {
+        return variable !== null && typeof variable === 'object' && variable.constructor === Object;
     },
     /**
      * Check if variable is a string
@@ -119,7 +128,7 @@ var types = {
     isEmptyObject: function(object) {
         if (object === null || object === undefined) return true;
 
-        var key;        
+        var key;
 
         for (key in object) return false;
         return true;
