@@ -8,7 +8,8 @@ var dict = {
           connectionRefused:      'Connection refused',
           requestTimeout:         'Request timeout',
           methodNotAllowed:       'Method not allowed',
-          serviceUnavailable:     'Service unavailable'
+          serviceUnavailable:     'Service unavailable',
+          notFound:               'Resource not found',
     },
     fr: {
           badGateway:             'Passerelle incorrecte',
@@ -17,7 +18,8 @@ var dict = {
           connectionRefused:      'Connexion refusée',
           requestTimeout:         'Arrêt de requête',
           methodNotAllowed:       'Methode non permise',
-          serviceUnavailable:     'Service indisponible'
+          serviceUnavailable:     'Service indisponible',
+          notFound:               'Resource non trouvée',
     }
 };
 
