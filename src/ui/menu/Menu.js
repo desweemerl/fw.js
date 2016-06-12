@@ -8,6 +8,7 @@
 
 var fw = require('../../Core');
 var FwElement = require('../Element');
+var Message = require('fw/i18n/Message');
 
 /**
  * Create a menu element
@@ -15,7 +16,7 @@ var FwElement = require('../Element');
  * @alias module:/fw/ui/menu/VerticalMenu
  * @augments fw/ui/Element
  * @param {Object} [config] - the configuration object of the menu
- * @param {number} [type=Menu.HORIZONTAL] - menu type (HORIZONTAL or VERTICAL)
+ * @param {string} [type='horizontal'] - menu type ('horizontal' or 'vertical')
  * @param {function} [config.onClick] - define an onClick event function
  */
 class FwMenu extends FwElement {
@@ -30,20 +31,13 @@ class FwMenu extends FwElement {
      */
     static className = 'fw-menu'; // jshint ignore:line
     /**
-     * Define menu HORIZONTAL const
-     */
-    static HORIZONTAL = 0; // jshint ignore:line
-    /**
-     * Define menu VERTICAL const
-     */
-    static VERTICAL = 1; // jshint ignore:line
-    /**
      * Initialize the UI element
      * @method initialize
      * @private
      */
     initialize() {
         this.menu = null;
+        this.selectedIndex = null;
     }
     /**
      * Create the vertical menu nodes
@@ -83,7 +77,7 @@ class FwMenu extends FwElement {
     /**
      * Create a menu
      * @method createMenu
-     * @param {Array.<{label: string}>|{title: string, items: Array.<{label: string}>}} menu - entries for the menu
+     * @param {Array.<{label: string|fw/i18n/Message}>|{title: string|fw/i18n/Message, items: Array.<{label: string|fw/i18n/Message}>}} menu - entries for the menu
      */
     createMenu(menu) {
         var index = 0;
@@ -93,10 +87,10 @@ class FwMenu extends FwElement {
         fw.emptyNode(this.ulNode);
 
         switch(this.type) {
-            case FwMenu.VERTICAL:
-                if (!fw.isObject(menu)) return;
+            case 'vertical':
+                if (!fw.isPureObject(menu)) return;
 
-                if (fw.isString(menu.title)) {
+                if (fw.isString(menu.title) || menu.title instanceof Message) {
                     spanNode = document.createElement('span');
                     spanNode.classList.add('fw-menu-label');
                     spanNode.appendChild(document.createTextNode(this.createMessage(menu.title)));
@@ -110,7 +104,7 @@ class FwMenu extends FwElement {
                     for (n = 0, l = menu.items.length; n < l; n++) {
                         item = menu.items[n];
 
-                        if (fw.isString(item.label)) {
+                        if (fw.isString(item.label) || item.label instanceof Message) {
                             spanNode = document.createElement('span');
                             spanNode.classList.add('fw-menu-label');
                             spanNode.appendChild(document.createTextNode(this.createMessage(item.label)));
@@ -132,26 +126,36 @@ class FwMenu extends FwElement {
 
                 for (n = 0, l = menu.length; n < l; n++) {
                     item = menu[n];
-                    liNode = document.createElement('li');
-                    liNode.classList.add('fw-menu-item');
-                    liNode.appendChild(document.createTextNode(this.createMessage(item.label)));
-                    liNode.index = n;
-                    this.ulNode.appendChild(liNode);
-                    this.menu.items.push(item);
+
+                    if (fw.isString(item.label) || item.label instanceof Message) {
+                        liNode = document.createElement('li');
+                        liNode.classList.add('fw-menu-item');
+                        liNode.appendChild(document.createTextNode(this.createMessage(item.label)));
+                        liNode.index = n;
+                        this.ulNode.appendChild(liNode);
+                        this.menu.items.push(item);
+                    }
                 }
         }
+
+        this.selectedIndex = null;
     }
     /**
      * Called when an onClick event occurs on an menu entry
+     * @method selectMenu
      * @param {number} index
      * @param {function} handler
      * @private
      */
     selectMenu(index, handler) {
+        if (this.selectedIndex === index) return;
+
         var selected = this.ulNode.getElementsByClassName('selected')[0];
-        var liNode = this.ulNode.childNodes[fw.isString(this.menu.title) ? index + 1 : index];
+        var liNode = this.ulNode.childNodes[this.menu.title ? index + 1 : index];
 
         if (liNode !== undefined) {
+            this.selectedIndex = index;
+
             if (selected !== undefined) {
                 selected.classList.remove('selected');
             }
@@ -161,23 +165,32 @@ class FwMenu extends FwElement {
             if (fw.isFunction(handler)) {
                 handler(this.menu.items[index]);
             }
+        } else {
+            this.selectedIndex = null;
         }
     }
     /**
-     * Set menu type (HORIZONTAL or VERTICAL)
+     * Retrieve the selected item
+     * @method getSelectedItem
+     * @return {Object}
+     */
+    getSelectedItem() {
+        return this.selectedIndex === null ? null : this.menu.items[this.selectedIndex];
+    }
+    /**
+     * Set menu type ('horizontal' or 'vertical')
      * @method setMenuType
-     * @param {number|string} type
+     * @param {string} type
      */
     setMenuType(type) {
         switch(type) {
             case 'vertical':
-            case FwMenu.VERTICAL:
                 this.type = type;
                 this.removeClass('horizontalMenu');
                 this.addClass('verticalMenu');
                 break;
             default:
-                this.type = FwMenu.HORIZONTAL;
+                this.type = 'horizontal',
                 this.removeClass('verticalMenu');
                 this.addClass('horizontalMenu');
         }
