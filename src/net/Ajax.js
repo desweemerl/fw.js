@@ -23,7 +23,7 @@ var types = require('../types');
  * @param {number} [options.timeout] - timeout of the request
  * @param {function} [options.onLoadStart] - callback function call when request starts
  * @param {function} [options.onProgress] - callback function call when request is in progress
- * @param {function} [options.onLoadEnd] - callback function call when request ends* 
+ * @param {function} [options.onLoadEnd] - callback function call when request ends*
  */
 class FwAjax {
     /**
@@ -43,8 +43,8 @@ class FwAjax {
             if (url.indexOf('?') === -1) { url += '?'; }
             // Add a timestamp a the url end to avoid caching (IE fix)
             url += '&' + new Date().getTime();
-        }           
-       
+        }
+
         this.promise = new FwPromise(function(resolve, reject) {
             var key;
 
@@ -76,8 +76,8 @@ class FwAjax {
             }
 
             for (key in headers) {
-                self.xhr.setRequestHeader(key, headers[key]); 
-            }       
+                self.xhr.setRequestHeader(key, headers[key]);
+            }
 
             // Set timeout if defined
             if (types.isValidNumber(options.timeout))  { self.xhr.timeout = options.timeout; }
@@ -103,9 +103,9 @@ class FwAjax {
                 if (self.xhr.readyState !== 4) return;
 
                 var status = self.xhr.status;
-                var headers = function (name) { return self.xhr.getResponseHeader(name) };
+                var headers = function(name) { return self.xhr.getResponseHeader(name); };
                 var data = self.xhr.responseText;
-                var jsonResponse = false; 
+                var jsonResponse = false;
                 var contentType = self.xhr.getResponseHeader('Content-type') || '';
 
                 if (self.xhr.status === 0) {
@@ -128,7 +128,7 @@ class FwAjax {
                         resolve({
                             status:  status,
                             headers: headers,
-                            data:    data 
+                            data:    data
                         });
                     }
                     // If not, the Ajax Promise is rejected
@@ -137,7 +137,7 @@ class FwAjax {
                             i18n:    options.i18n,
                             status:  status,
                             headers: headers,
-                            data:    data 
+                            data:    data
                         }));
                     }
                 }
@@ -164,7 +164,7 @@ class FwAjax {
      */
     catch(onRejected) {
         return this.promise.catch(onRejected);
-    }   
+    }
     /**
      * "abort" function process rejected ajax request
      * @method abort
