@@ -37,7 +37,7 @@ class FwNode {
     /**
      * Append node or element to node
      * @method append
-     * @param {fw/ui/Element|Node|string} child 
+     * @param {fw/ui/Element|Node|string} child
      * @return {fw/ui/Node}
      */
     append(child) {
@@ -62,11 +62,11 @@ class FwNode {
                     origin:     'append function'
                 });
             }
-           
+
             this.node.appendChild(child);
         } else if (types.isString(child)) {
             node = document.createElement('div');
-            node.innerHTML = child;       
+            node.innerHTML = child;
 
             for (n = 0, l = node.childNodes.length; n < l; n++) {
                 this.node.appendChild(node[n]);
@@ -84,7 +84,7 @@ class FwNode {
     /**
      * Prepend node or element to node
      * @method prepend
-     * @param {fw/ui/Element|Node|string} child 
+     * @param {fw/ui/Element|Node|string} child
      * @return {fw/ui/Node}
      */
     prepend(child) {
@@ -122,7 +122,7 @@ class FwNode {
             }
         } else if (types.isString(child)) {
             node = document.createElement('div');
-            node.innerHTML = child;       
+            node.innerHTML = child;
 
             if (firstChild) {
                 for (n = 0, l = node.childNodes.length; n < l; n++) {
@@ -142,7 +142,7 @@ class FwNode {
         }
 
         return this;
-    }   
+    }
     /**
      * Detach from parent node
      * @method detach
@@ -158,7 +158,7 @@ class FwNode {
     /**
      * Replace this node with an other one
      * @method replaceWith
-     * @param {fw/ui/Element|fw/ui/Node|Node} node 
+     * @param {fw/ui/Element|fw/ui/Node|Node} node
      * @return {fw/ui/Node}
      */
     replaceWith(node) {
@@ -182,7 +182,7 @@ class FwNode {
             });
         }
 
-        if (this.node !== node) {    
+        if (this.node !== node) {
             this.node.parentNode.replaceChild(this.node, node);
         }
 
@@ -241,8 +241,8 @@ class FwNode {
                 config = arguments[3];
         }
 
-        store = sharedConfig ? 
-            ElementFactory.html(this.node, HTML, sharedConfig, config) : 
+        store = sharedConfig ?
+            ElementFactory.html(this.node, HTML, sharedConfig, config) :
                 ElementFactory.html(this.node, HTML, config);
 
                 if (optStore) {
@@ -258,6 +258,15 @@ class FwNode {
      */
     el() {
         return this.node.fwElement ? this.node.fwElement : null;
+    }
+    /**
+     * Check if node has class
+     * @method hasClass
+     * @param {string} className - class name
+     * @return {boolean}
+     */
+    hasClass(className) {
+        return this.node.classList.contains(className);
     }
     /**
      * Add class to node
@@ -311,7 +320,7 @@ class FwNode {
      */
     getByTag(tagName) {
         return new FwNodes(this.node.getElementsByTagName(tagName))
-    }  
+    }
     /**
      * Get nodes by their name
      * @method getByName
@@ -337,7 +346,7 @@ class FwNode {
     empty() {
         while (this.node.firstChild) {
             this.node.removeChild(this.node.firstChild);
-        } 
+        }
 
         return this;
     }
@@ -347,7 +356,7 @@ class FwNode {
  * @class FwNodes
  * @private
  * @param {Node[]} nodes
- */ 
+ */
 class FwNodes {
     /**
      * @constructor
@@ -356,7 +365,7 @@ class FwNodes {
         this.nodes = nodes;
     }
     /**
-     * Return 
+     * Return
      * @method index
      * @param {number} index - node index in the nodes array
      * @return {FwNode|null}
@@ -366,7 +375,7 @@ class FwNodes {
 
         if (node) return new FwNode(node);
 
-        return null;    
+        return null;
     }
     /**
      * Return the first node
@@ -375,7 +384,7 @@ class FwNodes {
      */
     first() {
         return this.nodes[0] ? new FwNode(this.nodes[0]) : null;
-    }   
+    }
     /**
      * Return the last node
      * @method last
@@ -385,7 +394,7 @@ class FwNodes {
         var lastIndex = this.nodes.length - 1;
 
         return lastIndex !== -1 ? new FwNode(this.nodes[lastIndex]) : null;
-    } 
+    }
     /**
      * Iterate over all nodes
      * @method iterate
@@ -416,7 +425,7 @@ class FwNodes {
 
         return null;
     }
-    /** 
+    /**
      * Return last element
      * @method lastEl
      * @return {fw/ui/Element}
@@ -448,7 +457,7 @@ class FwNodes {
                 cb(node.fwElement);
             }
         }
-    }  
+    }
 }
 
 module.exports = FwNode;
