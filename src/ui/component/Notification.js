@@ -1,5 +1,5 @@
 /**
- * @module fw/ui/component/desktop/Notification
+ * @module fw/ui/component/Notification
  * @license GNU Affero General Public License version 3
  * @author Ludovic Desweemer
  */
@@ -138,7 +138,7 @@ class FwNotification extends FwElement {
      * Define element className
      * @property className
      */
-    static className = 'fw-notification'; // jshint ignore:line   
+    static className = 'fw-notification'; // jshint ignore:line
     /**
      * Clear all messages
      * @method cleara
@@ -147,7 +147,7 @@ class FwNotification extends FwElement {
     static clear() {
         while (notifications.length > 0) {
             notifications[0].hide();
-        } 
+        }
     }
     /**
      * Initialize the notification UI element
@@ -197,7 +197,7 @@ class FwNotification extends FwElement {
         this.onAttributeChange('error', this.setError);
     }
     /**
-     * Trigger attach event. Show method is called 
+     * Trigger attach event. Show method is called
      * @method triggerAttach
      * @private
      */
@@ -206,7 +206,7 @@ class FwNotification extends FwElement {
         super.triggerAttach();
     }
     /**
-     * Trigger a detach event. Hide method is called 
+     * Trigger a detach event. Hide method is called
      * @method triggerDetach
      * @private
      */
@@ -262,7 +262,7 @@ class FwNotification extends FwElement {
      * @method setMessage
      * @param {string|fw/i18n/Message} message - notification message
      * @param {Object} args - arguments for message
-     */ 
+     */
     setMessage(message, args) {
         this.message = message instanceof Message ? message : this.createMessage(message, args);
         fw.emptyNode(this.node);
