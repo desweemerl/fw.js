@@ -59,7 +59,7 @@ class DataGrid extends ArrayElement {
      * Initialize the UI element
      * @method initialize
      * @private
-     */     
+     */
     initialize() {
         super.initialize();
 
@@ -101,7 +101,7 @@ class DataGrid extends ArrayElement {
                 this.addProperty(column.property, {
                     type:         type,
                     validators:   ValidatorFactory.getValidators(column),
-                    defaultValue: column.defaultValue 
+                    defaultValue: column.defaultValue
                 });
             }
 
@@ -157,13 +157,13 @@ class DataGrid extends ArrayElement {
                 break;
             case 'beforeLoad':
                 this.showSpinner();
-                break;    
+                break;
             case 'load':
-                this.enabled = true; 
+                this.enabled = true;
                 this.refresh();
                 this.hideSpinner();
-                break;    
-            case 'fail':    
+                break;
+            case 'fail':
                 this.hideSpinner();
                 break;
         }
@@ -386,7 +386,7 @@ class DataGrid extends ArrayElement {
         }
     }
     /**
-     * resize window event handler 
+     * resize window event handler
      * @method onWindowResize
      * @private
      */
@@ -401,7 +401,7 @@ class DataGrid extends ArrayElement {
     onWindowMouseMove(e) {
         if (this.mousedown) {
             this.resizeColumn(this.numColResized, e.clientX - this.mouseStartX);
-        }       
+        }
     }
     /**
      * mouseup window event handler
@@ -412,7 +412,7 @@ class DataGrid extends ArrayElement {
         this.mousedown = false;
         this.mouseStartX = null;
         this.numColResized = null;
-        this.columnWidth = null; 
+        this.columnWidth = null;
     }
     /**
      * Build the DataGrid header
@@ -457,7 +457,7 @@ class DataGrid extends ArrayElement {
             rowHTML.push(cell);
         }
 
-        this.headerNode.innerHTML = '<tr>' + rowHTML.join('') + '<th class="last"<div class="fw-datagrid-header"><div class="fw-datagrid-resizer" style="z-index:' + resizerZIndex + '"></div></div></th><th class="expandable"><div></div></th></tr>';
+        this.headerNode.innerHTML = '<tr>' + rowHTML.join('') + '<th class="last"><div class="fw-datagrid-header"><div class="fw-datagrid-resizer" style="z-index:' + resizerZIndex + '"></div><div>&nbsp;</div></div></th><th class="expandable"><div></div></th></tr>';
     }
     /**
      * Build the DataGrid body

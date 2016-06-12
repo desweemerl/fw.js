@@ -56,7 +56,7 @@ class EditableDataGrid extends ArrayElement {
      * Define element className
      * @property className
      */
-    static className = 'fw-editabledatagrid'; // jshint ignore:line   
+    static className = 'fw-editabledatagrid'; // jshint ignore:line
     /**
      * define the i18n dictionaries
      * @property i18n
@@ -66,7 +66,7 @@ class EditableDataGrid extends ArrayElement {
      * Initialize the UI element
      * @method initialize
      * @private
-     */    
+     */
     initialize() {
         super.initialize();
 
@@ -124,7 +124,7 @@ class EditableDataGrid extends ArrayElement {
                 this.addProperty(column.property, {
                     type:         type,
                     validators:   ValidatorFactory.getValidators(column),
-                    defaultValue: column.defaultValue 
+                    defaultValue: column.defaultValue
                 });
             }
 
@@ -1496,12 +1496,12 @@ class EditableDataGrid extends ArrayElement {
      * @method onClick
      * @private
      */
-    onClick(e) { 
+    onClick(e) {
         var cellNode = this.getCellNodeByChild(e.target);
         var numAction, numCol, numRow, index;
 
-        if (this.enabled && 
-            this.footerNode.contains(e.target.parentNode) && 
+        if (this.enabled &&
+            this.footerNode.contains(e.target.parentNode) &&
             e.target.parentNode.classList.contains('fw-editabledatagrid-faction')) {
 
             if (e.target.parentNode.classList.contains('go-first')) {
@@ -1522,13 +1522,13 @@ class EditableDataGrid extends ArrayElement {
             numRow = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.rowIndex - 1;
             index = ((this.page - 1) * this.size) + numRow;
 
-            if (!e.target.classList.contains('disabled') && 
+            if (!e.target.classList.contains('disabled') &&
                 fw.isFunction(this.columns[numCol].actions[numAction].onClick)) {
                 this.columns[numCol].actions[numAction].onClick(this.list[numRow]);
             }
 
         } else if (cellNode !== null &&
-            cellNode.fwCell.type === 'checkboxInput' && 
+            cellNode.fwCell.type === 'checkboxInput' &&
             !cellNode.fwCell.disabled) {
 
             cellNode = this.setFocusOnCellByChild(e.target);
@@ -1800,7 +1800,7 @@ class EditableDataGrid extends ArrayElement {
 
                         this.showSearchList(cellNode, cellNode.fwCell.inputNode.value);
                     }
-                    break;    
+                    break;
             }
         }
     }
@@ -1935,7 +1935,7 @@ class EditableDataGrid extends ArrayElement {
             if (!found) {
                 e.target.classList.add('selected');
             }
-        }       
+        }
     }
     /**
      * mousedown event handler for list node
@@ -2003,12 +2003,12 @@ class EditableDataGrid extends ArrayElement {
             if (n > 0) {
                 cell += '<div class="fw-editabledatagrid-resizer" style="z-index:"' + resizerZIndex + '></div>';
             }
-            
+
             cell += '<div class="fw-editabledatagrid-hlabel">' + header + '</div></div></th>';
             rowHTML.push(cell);
         }
 
-        this.headerNode.innerHTML = '<tr>' + rowHTML.join('') + '<th class="last"><div class="fw-editabledatagrid-hlabel"><div class="fw-editabledatagrid-resizer">&nbsp;</div></div></th><th class="expandable"><div></div></th></tr>';
+        this.headerNode.innerHTML = '<tr>' + rowHTML.join('') + '<th class="last"><div class="fw-editabledatagrid-hlabel"><div class="fw-editabledatagrid-resizer"></div><div>&nbsp;</div></div></th><th class="expandable"><div></div></th></tr>';
     }
     /**
      * Go the specified page
@@ -2442,7 +2442,7 @@ class EditableDataGrid extends ArrayElement {
                 this.invalidCells = {};
                 this.goFirstPage();
                 break;
-            case 'update':    
+            case 'update':
                 page = Math.floor(index / this.size) + 1;
                 if (this.page === page) {
                     this.refreshRow(index - ((page - 1) * this.size));
