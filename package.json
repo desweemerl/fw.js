@@ -1,9 +1,9 @@
 {
-  "name": "FireworksJS",
+  "name": "FW.js",
   "version": "0.1.0",
-  "description": "FireworksJS Web Application Framework",
+  "description": "FW.js Web Application Framework",
   "author": "Ludovic Desweemer",
-  "license": "AGPL-3.0",
+  "license": "MIT",
   "main": "Gruntfile.js",
   "bin": {
     "fwjs": "./bin/fwjs"
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "gogs@ldesweemer.ddns.net:ldesweemer/FireworksJS.git"
+    "url": "https://github.com/desweemerl/fw.js"
   },
   "dependencies": {
     "bl": "^1.1.2",
