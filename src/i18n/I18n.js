@@ -1,6 +1,6 @@
 /**
  * @module fw/i18n/I18n
- * @license GNU Affero General Public License version 3
+ * @license MIT License
  * @author Ludovic Desweemer
  */
 
