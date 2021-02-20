@@ -229,7 +229,7 @@ class FileUploadSource extends NetSource {
                     if (index !== -1) {
                         self.ajaxInstances.splice(index, 1);
                     }
-                    // Desactivate the instance when no request is no longer in progress
+                    // Deactivate the instance when no request is no longer in progress
                     if (self.ajaxInstances.length === 0) {
                         self.active = false;
                     }
@@ -298,7 +298,7 @@ class FileUploadSource extends NetSource {
      */
     abort() {
         var n, l, file;
-        // Desactivate the FileUploadSource
+        // Deactivate the FileUploadSource
         this.active = false;
         // Abort all the ajax requests in progress
         while (this.ajaxInstances.length > 0) {

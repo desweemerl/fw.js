@@ -80,7 +80,7 @@ class FwButton extends FocusableElement {
         this.on('click', this.onNodeClick);
         this.on('keydown', this.onKeyDown);
         this.on('mousedown', this.onMouseDown);
-        this.on(['mouseup', 'mouseout', 'keyup'], this.desactivate);
+        this.on(['mouseup', 'mouseout', 'keyup'], this.deactivate);
     }
     /**
      * focus event handler 
@@ -149,10 +149,10 @@ class FwButton extends FocusableElement {
     }
     /**
      * mouseup, mouseout and keyup events handler
-     * @method desactivate
+     * @method deactivate
      * @private
      */
-    desactivate() {
+    deactivate() {
         this.removeClass('activated');
     }
     /**

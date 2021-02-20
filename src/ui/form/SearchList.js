@@ -192,7 +192,7 @@ class FwSearchList extends EditableFormElement {
         this.on('change',  this.onNodeChange);
         this.on('keydown', this.onKeyDown);
         this.on('mousedown', this.onMouseDown);
-        this.on(['mouseup', 'mouseout'], this.desactivate);
+        this.on(['mouseup', 'mouseout'], this.deactivate);
         this.on('click', this.onClick);
     }
     /**
@@ -287,10 +287,10 @@ class FwSearchList extends EditableFormElement {
     }
     /**
      * mouseup and mouseout event handler
-     * @method desactivate
+     * @method deactivate
      * @private
      */
-    desactivate(e) {
+    deactivate(e) {
         this.searchButtonNode.classList.remove('activated');
 
         if (this.filterButtonNode !== null) {

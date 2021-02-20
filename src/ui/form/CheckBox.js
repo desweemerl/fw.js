@@ -75,7 +75,7 @@ class FwCheckBox extends EditableFormElement {
         this.on('blur', this.onBlur);
         this.on('keydown', this.onKeyDown);
         this.on('mousedown', this.onMouseDown);
-        this.on(['keyup', 'mouseup', 'mouseout'], this.desactivate);
+        this.on(['keyup', 'mouseup', 'mouseout'], this.deactivate);
 
         this.onAttributeChange('label', this.setLabel);
     }
@@ -150,10 +150,10 @@ class FwCheckBox extends EditableFormElement {
     }
     /**
      * keyup mouseup and mouseout events handler
-     * @method desactivate
+     * @method deactivate
      * @private
      */
-    desactivate() {
+    deactivate() {
         this.removeClass('activated');
     }
     /**

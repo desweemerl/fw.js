@@ -1465,7 +1465,7 @@ class EditableDataGrid extends ArrayElement {
         this.on('keydown', this.onKeyDown);
         this.on('keyup', this.onKeyUp);
         this.on('keypress', this.onKeyPress);
-        this.on(['mouseup', 'mouseout'], this.desactivate);
+        this.on(['mouseup', 'mouseout'], this.deactivate);
 
         this.onWindowEvent('resize', this.onWindowResize);
         this.onWindowEvent('mousemove', this.onWindowMouseMove);
@@ -1887,10 +1887,10 @@ class EditableDataGrid extends ArrayElement {
     }
     /**
      * mouseup and mouseout events handler
-     * @method desactivate
+     * @method deactivate
      * @private
      */
-    desactivate(e) {
+    deactivate(e) {
         var cellNode = this.getCellNodeByChild(e.target);
 
         if (cellNode !== null) {

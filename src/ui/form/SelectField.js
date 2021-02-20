@@ -99,7 +99,7 @@ class FwSelectField extends EditableFormElement {
         this.on('mousedown', this.onMouseDown);
         this.on('keyup', this.onKeyUp);
         this.on('keydown', this.onKeyDown);
-        this.on(['mouseup', 'mouseout'], this.desactivate); 
+        this.on(['mouseup', 'mouseout'], this.deactivate); 
 
         this.onAttributeChange('key', this.setKey);
         this.onAttributeChange('label', this.setLabel);
@@ -283,10 +283,10 @@ class FwSelectField extends EditableFormElement {
     }
     /**
      * mouseup and mouseout events handler
-     * @method desactivate
+     * @method deactivate
      * @private
      */
-    desactivate(e) {
+    deactivate(e) {
         if (this.selectButtonNode.contains(e.target)) {
             this.selectButtonNode.classList.remove('activated');
         }

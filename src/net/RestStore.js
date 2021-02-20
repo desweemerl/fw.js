@@ -119,7 +119,7 @@ function processRequest(self, type, options) {
         if (index !== -1) {
             self.ajaxInstances.splice(index, 1);
         }
-        // Desactivate the instance when no request is no longer in progress
+        // Deactivate the instance when no request is no longer in progress
         if (self.ajaxInstances.length === 0) {
             self.active = false;
         }
@@ -135,7 +135,7 @@ function processRequest(self, type, options) {
         if (index !== -1) {
             self.ajaxInstances.splice(index, 1);
         }
-        // Desactivate the instance when no request is no longer in progress
+        // Deactivate the instance when no request is no longer in progress
         if (self.ajaxInstances.length === 0) {
             self.active = false;
         }
@@ -287,7 +287,7 @@ class RestStore {
      */
     abort() {
         var n, l, action;
-        // Desactivate the RestStore
+        // Deactivate the RestStore
         this.active = false;
         // Abort all the ajax requests in progress
         while (this.ajaxInstances.length > 0) {

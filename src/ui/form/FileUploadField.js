@@ -87,7 +87,7 @@ class FwFileUploadField extends FocusableElement {
         this.on('keydown', this.onKeyDown);
         this.on('keyup', this.onKeyUp);
         this.on('mousedown', this.onMouseDown);
-        this.on(['mouseup', 'mousedown'], this.desactivate);
+        this.on(['mouseup', 'mousedown'], this.deactivate);
         this.on('drop', this.onDrop);
         this.on('dragover', this.onDragOver, false);
         this.on('dragleave', this.onDragLeave, false);
@@ -245,10 +245,10 @@ class FwFileUploadField extends FocusableElement {
      }
      /**
       * mouseup and mouseout events handler
-      * @method desactivate
+      * @method deactivate
       * @private
       */
-     desactivate() {
+     deactivate() {
          this.choiceNode.classList.remove('activated');
      }
      /**

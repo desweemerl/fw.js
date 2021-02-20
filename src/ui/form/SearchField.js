@@ -145,7 +145,7 @@ class FwSearchField extends EditableFormElement {
         this.on('mousedown', this.onMouseDown);
         this.on('keyup', this.onKeyUp);
         this.on('keydown', this.onKeyDown);
-        this.on(['mouseup', 'mouseout'], this.desactivate); 
+        this.on(['mouseup', 'mouseout'], this.deactivate); 
 
         this.onAttributeChange('label', this.setLabel);
         this.onAttributeChange('required', this.setRequired);
@@ -317,10 +317,10 @@ class FwSearchField extends EditableFormElement {
     }
     /**
      * mouseup and mouseout events handler
-     * @method desactivate
+     * @method deactivate
      * @private
      */
-    desactivate(e) {
+    deactivate(e) {
         if (this.searchButtonNode && this.searchButtonNode.contains(e.target)) {
             this.searchButtonNode.classList.remove('activated');
         }

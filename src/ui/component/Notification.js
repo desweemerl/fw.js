@@ -28,8 +28,8 @@ function activateEvents() {
         window.addEventListener('mousedown', onMouseDown, false);
     }
 }
-// Desactivate windows events
-function desactivateEvents() {
+// Deactivate windows events
+function deactivateEvents() {
     if (eventsActive) {
         eventsActive = false;
         window.removeEventListener('mousemove', onMouseMove, false);
@@ -92,7 +92,7 @@ function refreshView() {
             }
             break;
         case STATE_HIDE:
-            desactivateEvents();
+            deactivateEvents();
 
             if (notification.hidingTimer === null) {
                 notification.hidingTimer = Date.now();

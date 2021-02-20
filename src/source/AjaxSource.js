@@ -117,14 +117,14 @@ class AjaxSource extends NetSource {
 
             return self.ajaxInstance.promise;
         }).then(
-            // Store data when ajax request is successful, hide spinners and desactivate the AjaxSource
+            // Store data when ajax request is successful, hide spinners and deactivate the AjaxSource
             function(response) {
                 self.active = false;
                 self.ajaxInstance = null;
 
                 return response;
             },
-            // Desactivate the ChartSource and hide spinners
+            // Deactivate the ChartSource and hide spinners
             function(error) {
                 self.active = false;
                 self.ajaxInstance = null;
